@@ -1,0 +1,1244 @@
+/* =========================================================================
+   ACE TRAINING LAB — MAIN STYLESHEET
+   =========================================================================
+   This file is organized into sections. Use Ctrl+F / Cmd+F and search for
+   the ALL-CAPS section titles below to jump around quickly:
+
+   1. CSS VARIABLES (colors, fonts, spacing)  <-- change site-wide colors here
+   2. RESET & BASE STYLES
+   3. LAYOUT HELPERS (container, buttons, section titles)
+   4. TOP BAR + HEADER + NAVIGATION
+   5. HERO SECTION
+   6. COURSE CARDS
+   7. ABOUT SECTION
+   8. TESTIMONIAL SECTION
+   9. CONTACT TEASER SECTION
+   10. FOOTER
+   11. ENROLL NOW SIDEBAR FORM (floating widget on every page)
+   12. WHATSAPP FLOATING BUTTON
+   13. GENERIC FORM STYLES (contact page, registration page)
+   14. INNER PAGE HEADER (page title banner used on sub-pages)
+   15. COURSE DETAIL PAGE (info table, cities list, schedule table)
+   16. FAQ ACCORDION
+   17. INSTRUCTOR / TEAM CARDS (About Us page)
+   18. REGISTRATION PAGE (standalone, no header/footer)
+   19. RESPONSIVE / MOBILE STYLES
+   ========================================================================= */
+
+
+/* =========================================================================
+   1. CSS VARIABLES
+   ========================================================================= */
+:root {
+  /* Brand colors */
+  --color-navy: #003758;        /* primary brand color: header, footer, headings */
+  --color-navy-dark: #00253b;   /* darker navy for gradients / hover states */
+  --color-gold: #faad4f;        /* accent color: buttons, stars, highlights */
+  --color-gold-dark: #e69a3d;   /* gold hover state */
+
+  /* Text colors */
+  --color-text: #1e1e1e;        /* main body text */
+  --color-text-light: #3c3c3c;  /* secondary text */
+  --color-text-muted: #6b6b6b;  /* captions, small print */
+  --color-white: #ffffff;
+
+  /* Backgrounds */
+  --color-bg-light: #f7f5f2;    /* light section background */
+  --color-bg-cream: #ece2d5;    /* cream section background */
+  --color-border: #dedede;
+
+  /* Fonts */
+  --font-heading: "Roboto Slab", serif;
+  --font-body: "Roboto", sans-serif;
+  --font-ui: "Inter", sans-serif;
+
+  /* Spacing */
+  --gap-sm: 0.5rem;
+  --gap-md: 1rem;
+  --gap-lg: 2rem;
+  --gap-xl: 4rem;
+
+  /* Shape */
+  --radius: 10px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 20px rgba(0, 55, 88, 0.1);
+  --shadow-hover: 0 8px 30px rgba(0, 55, 88, 0.18);
+
+  /* Layout */
+  --container-width: 1200px;
+}
+
+
+/* =========================================================================
+   2. RESET & BASE STYLES
+   ========================================================================= */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  line-height: 1.6;
+  background: var(--color-white);
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  color: var(--color-navy);
+  line-height: 1.25;
+  margin: 0 0 1rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+/* Skip link — accessibility, hidden until focused */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--color-navy);
+  color: var(--color-white);
+  padding: 0.75rem 1.5rem;
+  z-index: 9999;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+
+/* =========================================================================
+   3. LAYOUT HELPERS
+   ========================================================================= */
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+section {
+  padding: var(--gap-xl) 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--color-gold);
+  color: var(--color-navy);
+}
+.btn-primary:hover {
+  background: var(--color-gold-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-white);
+  border: 2px solid var(--color-white);
+}
+.btn-outline:hover {
+  background: var(--color-white);
+  color: var(--color-navy);
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+
+/* =========================================================================
+   4. TOP BAR + HEADER + NAVIGATION
+   ========================================================================= */
+.topbar {
+  background: var(--color-navy-dark);
+  color: var(--color-white);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+
+.topbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.topbar-message {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.topbar-message strong {
+  color: var(--color-gold);
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.topbar-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.2s ease;
+}
+.topbar-actions a:hover {
+  background: var(--color-gold);
+  color: var(--color-navy);
+}
+
+.site-header {
+  background: var(--color-white);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 500;
+}
+
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 64px;
+  width: auto;
+}
+
+.main-nav ul {
+  display: flex;
+  gap: 2rem;
+}
+
+.main-nav a {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  color: var(--color-navy);
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.main-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: var(--color-gold);
+  transition: width 0.2s ease;
+}
+
+.main-nav a:hover::after,
+.main-nav a.active::after {
+  width: 100%;
+}
+
+.main-nav a.active {
+  color: var(--color-gold-dark);
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 26px;
+  height: 3px;
+  background: var(--color-navy);
+  margin: 5px 0;
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+
+/* =========================================================================
+   5. HERO SECTION
+   ========================================================================= */
+.hero {
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
+  color: var(--color-white);
+  padding: var(--gap-xl) 0;
+}
+
+.hero .container {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--gap-lg);
+  align-items: center;
+}
+
+.hero h1 {
+  color: var(--color-white);
+  font-size: 2.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 2rem;
+  max-width: 40em;
+}
+
+.hero-image img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hover);
+}
+
+.exam-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.exam-badges span {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+}
+
+
+/* =========================================================================
+   6. COURSE CARDS
+   ========================================================================= */
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-lg);
+}
+
+.course-card {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+.course-card img {
+  height: 190px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.course-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.course-tag {
+  display: inline-block;
+  align-self: flex-start;
+  background: var(--color-gold);
+  color: var(--color-navy);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  margin-bottom: 0.75rem;
+}
+
+.course-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.course-card p {
+  color: var(--color-text-light);
+  font-size: 0.95rem;
+  flex-grow: 1;
+}
+
+.course-card .seats {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--color-gold-dark);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.course-card .btn {
+  align-self: flex-start;
+}
+
+
+/* =========================================================================
+   7. ABOUT SECTION
+   ========================================================================= */
+.about-section .container {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: var(--gap-lg);
+  align-items: center;
+}
+
+.about-section img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.about-section h2 {
+  font-size: 2rem;
+}
+
+.about-section p {
+  color: var(--color-text-light);
+}
+
+
+/* =========================================================================
+   8. TESTIMONIAL SECTION
+   ========================================================================= */
+.testimonial-section {
+  background: var(--color-bg-cream);
+  text-align: center;
+}
+
+.testimonial-card {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.testimonial-card img.quote-icon {
+  width: 48px;
+  margin: 0 auto 1rem;
+}
+
+.testimonial-card blockquote {
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--color-text-light);
+  margin: 0 0 1.25rem;
+}
+
+.testimonial-card cite {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  color: var(--color-navy);
+  font-style: normal;
+}
+
+
+/* =========================================================================
+   9. CONTACT TEASER SECTION
+   ========================================================================= */
+.contact-teaser {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.contact-teaser .container {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--gap-lg);
+  align-items: center;
+}
+
+.contact-teaser h2 {
+  color: var(--color-white);
+}
+
+.contact-teaser p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.contact-teaser img {
+  border-radius: var(--radius-lg);
+}
+
+.contact-info-list {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-info-list .label {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gold);
+}
+
+.contact-info-list .value {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+
+/* =========================================================================
+   10. FOOTER
+   ========================================================================= */
+.site-footer {
+  background: var(--color-navy-dark);
+  color: rgba(255, 255, 255, 0.85);
+  padding: var(--gap-xl) 0 var(--gap-md);
+  font-size: 0.95rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap-lg);
+  margin-bottom: var(--gap-lg);
+}
+
+.footer-grid h2 {
+  color: var(--color-white);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.footer-grid ul li {
+  margin-bottom: 0.6rem;
+}
+
+.footer-grid a:hover {
+  color: var(--color-gold);
+}
+
+.footer-logo img {
+  height: 56px;
+  margin-bottom: 1rem;
+}
+
+.social-icons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.social-icons a {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.social-icons a:hover {
+  background: var(--color-gold);
+  color: var(--color-navy);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.footer-bottom a:hover {
+  color: var(--color-gold);
+}
+
+
+/* =========================================================================
+   11. ENROLL NOW SIDEBAR FORM (floating widget appears on most pages)
+   ========================================================================= */
+.enroll-widget {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 320px;
+  max-width: calc(100vw - 2rem);
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hover);
+  z-index: 400;
+  overflow: hidden;
+  transition: transform 0.25s ease;
+}
+
+.enroll-widget.collapsed {
+  transform: translateY(calc(100% - 54px));
+}
+
+.enroll-widget-header {
+  background: var(--color-navy);
+  color: var(--color-white);
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 700;
+}
+
+.enroll-widget-header .toggle-icon {
+  transition: transform 0.25s ease;
+}
+
+.enroll-widget.collapsed .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.enroll-widget-body {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 1.25rem;
+}
+
+.enroll-widget-body img {
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+
+/* =========================================================================
+   12. WHATSAPP FLOATING BUTTON
+   ========================================================================= */
+.whatsapp-float {
+  position: fixed;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #25d366;
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  box-shadow: var(--shadow-hover);
+  z-index: 400;
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.08);
+}
+
+
+/* =========================================================================
+   13. GENERIC FORM STYLES
+   ========================================================================= */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+  color: var(--color-navy);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group input[type="file"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: var(--color-white);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px rgba(250, 173, 79, 0.25);
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-radio-group {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.form-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-note {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-success,
+.form-error {
+  padding: 0.9rem 1.1rem;
+  border-radius: 8px;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+.form-success {
+  background: #e6f7ee;
+  color: #1a7a4c;
+  border: 1px solid #b7e6cd;
+}
+
+.form-error {
+  background: #fdeeee;
+  color: #a12727;
+  border: 1px solid #f3c1c1;
+}
+
+
+/* =========================================================================
+   14. INNER PAGE HEADER (title banner used on sub-pages)
+   ========================================================================= */
+.page-banner {
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
+  color: var(--color-white);
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.page-banner h1 {
+  color: var(--color-white);
+  margin-bottom: 0.5rem;
+}
+
+.page-banner .breadcrumb {
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.page-banner .breadcrumb a:hover {
+  color: var(--color-gold);
+}
+
+
+/* =========================================================================
+   15. COURSE DETAIL PAGE
+   ========================================================================= */
+.course-detail-layout {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--gap-lg);
+  align-items: start;
+}
+
+.course-detail-hero img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  margin-bottom: var(--gap-lg);
+}
+
+.course-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--gap-lg);
+}
+
+.course-info-table tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.course-info-table td {
+  padding: 0.85rem 0.5rem;
+  vertical-align: top;
+}
+
+.course-info-table td:first-child {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  color: var(--color-navy);
+  width: 30%;
+  white-space: nowrap;
+}
+
+.price-box {
+  background: var(--color-bg-cream);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: var(--gap-lg);
+}
+
+.price-box .old-price {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.price-box .new-price {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+}
+
+.schedule-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: var(--gap-lg);
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+.schedule-table th,
+.schedule-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+
+.schedule-table th {
+  background: var(--color-navy);
+  color: var(--color-white);
+  font-family: var(--font-ui);
+}
+
+.schedule-table .seats-low {
+  color: #c0392b;
+  font-weight: 600;
+}
+
+.cities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: var(--gap-lg);
+}
+
+.cities-list li {
+  background: var(--color-bg-light);
+  border: 1px solid var(--color-border);
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-family: var(--font-ui);
+}
+
+.course-sidebar {
+  background: var(--color-bg-light);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  position: sticky;
+  top: 100px;
+}
+
+.course-sidebar img {
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+
+/* =========================================================================
+   16. FAQ ACCORDION
+   ========================================================================= */
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.faq-question {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 1.25rem 0;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-navy);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faq-question .icon {
+  transition: transform 0.2s ease;
+  color: var(--color-gold-dark);
+  font-size: 1.3rem;
+}
+
+.faq-item.open .faq-question .icon {
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+  color: var(--color-text-light);
+}
+
+.faq-answer p {
+  padding-bottom: 1.25rem;
+}
+
+.faq-item.open .faq-answer {
+  max-height: 400px;
+}
+
+
+/* =========================================================================
+   17. INSTRUCTOR / TEAM CARDS (About Us page)
+   ========================================================================= */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap-lg);
+}
+
+.team-card {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.team-card img {
+  height: 220px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.team-card-body {
+  padding: 1.25rem;
+}
+
+.team-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.team-card .role {
+  font-family: var(--font-ui);
+  color: var(--color-gold-dark);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.team-card p {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+}
+
+
+/* =========================================================================
+   18. REGISTRATION PAGE (standalone, no header/footer/sidebar widget)
+   ========================================================================= */
+.registration-page {
+  background: var(--color-bg-light);
+  min-height: 100vh;
+  padding: var(--gap-xl) 0;
+}
+
+.registration-wrapper {
+  max-width: 760px;
+  margin: 0 auto;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 2.5rem;
+}
+
+.registration-wrapper .logo {
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.registration-wrapper h2 {
+  border-bottom: 2px solid var(--color-gold);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.payment-method {
+  background: var(--color-bg-cream);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.payment-method h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.payment-method dl {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.payment-method dt {
+  color: var(--color-text-muted);
+  display: inline;
+}
+
+.payment-method dd {
+  display: inline;
+  margin: 0 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.payment-method dd::after {
+  content: "";
+  display: block;
+}
+
+
+/* =========================================================================
+   19. RESPONSIVE / MOBILE STYLES
+   ========================================================================= */
+@media (max-width: 992px) {
+  .courses-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .course-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .course-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar-message {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .main-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 280px;
+    background: var(--color-navy);
+    padding: 5rem 1.5rem 1.5rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 600;
+  }
+
+  .main-nav.open {
+    transform: translateX(0);
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .main-nav a {
+    color: var(--color-white);
+  }
+
+  .nav-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 550;
+  }
+
+  .nav-overlay.open {
+    display: block;
+  }
+
+  .hero .container,
+  .about-section .container,
+  .contact-teaser .container {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-image {
+    order: -1;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .courses-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .enroll-widget {
+    width: calc(100vw - 2rem);
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  .whatsapp-float {
+    left: 1rem;
+    bottom: 1rem;
+    width: 52px;
+    height: 52px;
+    font-size: 1.4rem;
+  }
+
+  .registration-wrapper {
+    padding: 1.5rem;
+  }
+}

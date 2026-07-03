@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration | ACE Training Lab</title>
+  <meta name="description" content="Complete your ACE Training Lab course registration and submit your fee payment confirmation.">
+  <link rel="icon" href="../assets/images/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500;700&family=Roboto+Slab:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+  <!-- =====================================================================
+       This page intentionally has NO site header, footer, or Enroll Now
+       widget — it matches the original site, which used this as a
+       standalone landing page (e.g. linked directly from WhatsApp/ads).
+       ===================================================================== -->
+  <div class="registration-page">
+    <div class="container">
+      <div class="registration-wrapper">
+
+        <div class="logo">
+          <a href="../index.html"><img src="../assets/images/logo.png" alt="ACE Training Lab logo" style="height:70px;"></a>
+        </div>
+
+        <h2>Step 1: Payment Details</h2>
+        <p>Please pay your course fee using any one of the accounts below, then upload a screenshot of the payment as proof in Step 2.</p>
+
+        <div class="payment-methods">
+          <div class="payment-method">
+            <h4>HBL &ndash; Habib Bank Limited</h4>
+            <dl>
+              <dt>AC Title:</dt> <dd>Aneeqa Sultana</dd><br>
+              <dt>AC Number:</dt> <dd>02847900810899</dd><br>
+              <dt>IBAN:</dt> <dd>PK38HABB0002847900810899</dd>
+            </dl>
+          </div>
+          <div class="payment-method">
+            <h4>Bank Alfalah</h4>
+            <dl>
+              <dt>AC Title:</dt> <dd>Aneeqa Sultana</dd><br>
+              <dt>AC Number:</dt> <dd>59055001981536</dd>
+            </dl>
+          </div>
+          <div class="payment-method">
+            <h4>JazzCash</h4>
+            <dl>
+              <dt>AC Title:</dt> <dd>Aneeqa Sultana</dd><br>
+              <dt>AC Number:</dt> <dd>03418905188</dd>
+            </dl>
+          </div>
+          <div class="payment-method">
+            <h4>Easypaisa</h4>
+            <dl>
+              <dt>AC Title:</dt> <dd>Aneeqa Sultana</dd><br>
+              <dt>AC Number:</dt> <dd>03418905188</dd>
+            </dl>
+          </div>
+        </div>
+
+        <h2>Step 2: Registration Form</h2>
+
+        <!-- IMPORTANT: this form includes a file upload (payment screenshot).
+             It must keep enctype="multipart/form-data" and the Formspree
+             endpoint must be a form that has file uploads enabled
+             (Formspree's free plan supports attachments up to 10MB). -->
+        <form action="https://formspree.io/f/YOUR_FORMSPREE_REGISTRATION_ID" method="POST" enctype="multipart/form-data" data-formspree>
+          <div class="form-success" role="status">Thank you! Your registration has been received. Redirecting you shortly&hellip;</div>
+          <div class="form-error" role="alert">Something went wrong submitting your registration. Please try again or WhatsApp us.</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-date">Date</label>
+              <input type="date" id="reg-date" name="date">
+            </div>
+            <div class="form-group">
+              <label for="reg-course">Course Name*</label>
+              <input type="text" id="reg-course" name="course_name" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-name">Name*</label>
+            <input type="text" id="reg-name" name="name" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-father">Father's Name*</label>
+              <input type="text" id="reg-father" name="fathers_name" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-mother">Mother's Name*</label>
+              <input type="text" id="reg-mother" name="mothers_name" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-dob">Date of Birth*</label>
+            <input type="date" id="reg-dob" name="date_of_birth" required>
+          </div>
+
+          <div class="form-group">
+            <label>Gender *</label>
+            <div class="form-radio-group">
+              <label><input type="radio" name="gender" value="Male" required> Male</label>
+              <label><input type="radio" name="gender" value="Female"> Female</label>
+              <label><input type="radio" name="gender" value="Transgender"> Transgender</label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-religion">Religion*</label>
+              <input type="text" id="reg-religion" name="religion" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-nationality">Nationality*</label>
+              <input type="text" id="reg-nationality" name="nationality" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Marital Status *</label>
+            <div class="form-radio-group">
+              <label><input type="radio" name="marital_status" value="single" required> Single</label>
+              <label><input type="radio" name="marital_status" value="married"> Married</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-screenshot">Fee Submission Screenshot*</label>
+            <input type="file" id="reg-screenshot" name="fee_screenshot" accept="image/*,.pdf" required>
+            <p class="form-note">Upload a screenshot or photo of your payment confirmation (image or PDF, max 10MB).</p>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-address">Permanent Address*</label>
+            <input type="text" id="reg-address" name="permanent_address" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-mobile">Mobile Number*</label>
+              <input type="tel" id="reg-mobile" name="mobile_number" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-email">Email*</label>
+              <input type="email" id="reg-email" name="email" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Submit</button>
+        </form>
+
+        <p style="text-align:center; margin-top:1.5rem;">
+          <a href="https://api.whatsapp.com/send/?phone=923418905188&text=Hello" target="_blank" rel="noopener">WhatsApp us</a> if you need help completing this form.
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
