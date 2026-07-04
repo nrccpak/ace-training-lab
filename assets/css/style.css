@@ -30,11 +30,12 @@
    1. CSS VARIABLES
    ========================================================================= */
 :root {
-  /* Brand colors */
-  --color-navy: #003758;        /* primary brand color: header, footer, headings */
-  --color-navy-dark: #00253b;   /* darker navy for gradients / hover states */
-  --color-gold: #faad4f;        /* accent color: buttons, stars, highlights */
-  --color-gold-dark: #e69a3d;   /* gold hover state */
+  /* Brand colors — matches the Digital Tutor Club blue/white palette */
+  --color-navy: #024793;        /* primary brand blue: header, footer, headings, buttons */
+  --color-navy-dark: #012d5d;   /* darker navy for gradients / hover states */
+  --color-accent-on-dark: #ffffff; /* accent for links/hovers sitting on navy backgrounds
+                                       (replaces the old gold accent — kept as its own
+                                       variable so it's easy to find/change later) */
 
   /* Text colors */
   --color-text: #1e1e1e;        /* main body text */
@@ -43,14 +44,14 @@
   --color-white: #ffffff;
 
   /* Backgrounds */
-  --color-bg-light: #f7f5f2;    /* light section background */
-  --color-bg-cream: #ece2d5;    /* cream section background */
+  --color-bg-light: #f4f4f5;    /* light section background */
+  --color-bg-cream: #eef3fa;    /* soft pale-blue section background */
   --color-border: #dedede;
 
-  /* Fonts */
-  --font-heading: "Roboto Slab", serif;
-  --font-body: "Roboto", sans-serif;
-  --font-ui: "Inter", sans-serif;
+  /* Fonts — single font family throughout, matching the reference site */
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Poppins", sans-serif;
+  --font-ui: "Poppins", sans-serif;
 
   /* Spacing */
   --gap-sm: 0.5rem;
@@ -61,8 +62,8 @@
   /* Shape */
   --radius: 10px;
   --radius-lg: 20px;
-  --shadow: 0 4px 20px rgba(0, 55, 88, 0.1);
-  --shadow-hover: 0 8px 30px rgba(0, 55, 88, 0.18);
+  --shadow: 0 4px 20px rgba(2, 71, 147, 0.1);
+  --shadow-hover: 0 8px 30px rgba(2, 71, 147, 0.18);
 
   /* Layout */
   --container-width: 1200px;
@@ -164,11 +165,23 @@ section {
 }
 
 .btn-primary {
-  background: var(--color-gold);
-  color: var(--color-navy);
+  background: var(--color-navy);
+  color: var(--color-white);
 }
 .btn-primary:hover {
-  background: var(--color-gold-dark);
+  background: var(--color-navy-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Solid white button — for use on top of navy/blue backgrounds (hero,
+   course card panels) where a solid navy .btn-primary would blend in. */
+.btn-white {
+  background: var(--color-white);
+  color: var(--color-navy);
+}
+.btn-white:hover {
+  background: var(--color-bg-cream);
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
@@ -234,7 +247,7 @@ section {
 }
 
 .topbar-message strong {
-  color: var(--color-gold);
+  color: var(--color-accent-on-dark);
 }
 
 .topbar-actions {
@@ -252,7 +265,7 @@ section {
   transition: background 0.2s ease;
 }
 .topbar-actions a:hover {
-  background: var(--color-gold);
+  background: var(--color-accent-on-dark);
   color: var(--color-navy);
 }
 
@@ -290,7 +303,7 @@ section {
 .main-nav a {
   font-family: var(--font-ui);
   font-weight: 600;
-  color: var(--color-navy);
+  color: var(--color-text);
   padding: 0.5rem 0;
   position: relative;
 }
@@ -302,7 +315,7 @@ section {
   bottom: -2px;
   width: 0;
   height: 2px;
-  background: var(--color-gold);
+  background: var(--color-navy);
   transition: width 0.2s ease;
 }
 
@@ -311,20 +324,22 @@ section {
   width: 100%;
 }
 
+.main-nav a:hover,
 .main-nav a.active {
-  color: var(--color-gold-dark);
+  color: var(--color-navy);
 }
 
-/* "Register" call-to-action link in the nav — styled as a pill button
-   instead of a plain text link, and skips the underline hover effect. */
+/* "Register" call-to-action link in the nav — styled as a solid pill
+   button instead of a plain text link, and skips the underline effect. */
 .main-nav a.nav-cta {
-  background: var(--color-gold);
-  color: var(--color-navy);
+  background: var(--color-navy);
+  color: var(--color-white);
   padding: 0.5rem 1.25rem;
   border-radius: 50px;
 }
 .main-nav a.nav-cta:hover {
-  background: var(--color-gold-dark);
+  background: var(--color-navy-dark);
+  color: var(--color-white);
 }
 .main-nav a.nav-cta::after {
   display: none;
@@ -390,6 +405,16 @@ section {
   margin-top: 2rem;
 }
 
+/* The hero sits on a navy gradient, so its primary CTA needs the white
+   solid button instead of .btn-primary (which is navy-on-white). */
+.hero .btn-primary {
+  background: var(--color-white);
+  color: var(--color-navy);
+}
+.hero .btn-primary:hover {
+  background: var(--color-bg-cream);
+}
+
 .exam-badges span {
   font-family: var(--font-ui);
   font-weight: 600;
@@ -432,17 +457,23 @@ section {
   object-fit: cover;
 }
 
+/* "Poster" style panel — bold navy gradient with big uppercase heading,
+   replacing the old plain white card body. Matches the reference site's
+   course card graphics, built with real HTML/CSS instead of flattened
+   image files so the text stays fully editable. */
 .course-card-body {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
+  color: var(--color-white);
 }
 
 .course-tag {
   display: inline-block;
   align-self: flex-start;
-  background: var(--color-gold);
+  background: var(--color-white);
   color: var(--color-navy);
   font-family: var(--font-ui);
   font-weight: 700;
@@ -454,12 +485,16 @@ section {
 }
 
 .course-card h3 {
-  font-size: 1.25rem;
+  color: var(--color-white);
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.25;
   margin-bottom: 0.5rem;
 }
 
 .course-card p {
-  color: var(--color-text-light);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 0.95rem;
   flex-grow: 1;
 }
@@ -467,13 +502,24 @@ section {
 .course-card .seats {
   font-family: var(--font-ui);
   font-size: 0.85rem;
-  color: var(--color-gold-dark);
-  font-weight: 600;
+  color: var(--color-white);
+  font-weight: 700;
   margin-bottom: 1rem;
 }
 
 .course-card .btn {
   align-self: flex-start;
+}
+
+/* The card panel background is already navy, so "Learn More" needs the
+   white solid button instead of the navy .btn-primary (which would blend
+   into the panel behind it). */
+.course-card .btn-primary {
+  background: var(--color-white);
+  color: var(--color-navy);
+}
+.course-card .btn-primary:hover {
+  background: var(--color-bg-cream);
 }
 
 
@@ -578,7 +624,7 @@ section {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-gold);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .contact-info-list .value {
@@ -615,7 +661,7 @@ section {
 }
 
 .footer-grid a:hover {
-  color: var(--color-gold);
+  color: var(--color-accent-on-dark);
 }
 
 .footer-logo img {
@@ -642,7 +688,7 @@ section {
 }
 
 .social-icons a:hover {
-  background: var(--color-gold);
+  background: var(--color-accent-on-dark);
   color: var(--color-navy);
 }
 
@@ -657,7 +703,7 @@ section {
 }
 
 .footer-bottom a:hover {
-  color: var(--color-gold);
+  color: var(--color-accent-on-dark);
 }
 
 
@@ -776,8 +822,8 @@ section {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--color-gold);
-  box-shadow: 0 0 0 3px rgba(250, 173, 79, 0.25);
+  border-color: var(--color-navy);
+  box-shadow: 0 0 0 3px rgba(2, 71, 147, 0.2);
 }
 
 .form-group textarea {
@@ -857,7 +903,7 @@ section {
 }
 
 .page-banner .breadcrumb a:hover {
-  color: var(--color-gold);
+  color: var(--color-accent-on-dark);
 }
 
 
@@ -1012,7 +1058,7 @@ section {
 
 .faq-question .icon {
   transition: transform 0.2s ease;
-  color: var(--color-gold-dark);
+  color: var(--color-navy);
   font-size: 1.3rem;
 }
 
@@ -1070,7 +1116,7 @@ section {
 
 .team-card .role {
   font-family: var(--font-ui);
-  color: var(--color-gold-dark);
+  color: var(--color-navy);
   font-weight: 600;
   font-size: 0.85rem;
   margin-bottom: 0.75rem;
@@ -1106,7 +1152,7 @@ section {
 }
 
 .registration-wrapper h2 {
-  border-bottom: 2px solid var(--color-gold);
+  border-bottom: 2px solid var(--color-navy);
   padding-bottom: 0.75rem;
   margin-bottom: 1.5rem;
 }

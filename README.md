@@ -45,8 +45,8 @@ VS Code, etc.) or even Word-like tools that support HTML.
   the HTML.
 - **Colors / fonts**: open `assets/css/style.css` and look at the very top —
   section `1. CSS VARIABLES`. Every color used across the whole site is
-  defined once there (e.g. `--color-navy`, `--color-gold`). Change a value
-  there and it updates everywhere.
+  defined once there (e.g. `--color-navy`, `--color-accent-on-dark`). Change
+  a value there and it updates everywhere.
 - **Navigation menu / footer**: the header and footer are repeated at the top
   and bottom of every page (since this is plain HTML with no shared
   template engine). If you add/rename a page, update the menu in **every**
@@ -146,10 +146,16 @@ then open `http://localhost:8000/` in your browser.
 
 ## Notes on what changed from the original site
 
-- **Fonts**: the original site self-hosted Roboto, Roboto Slab, and Inter as
-  39 separate font files with complex language-subset splitting. This
-  rebuild loads the same three fonts from Google Fonts' CDN instead — same
-  look, far simpler to maintain.
+- **Color scheme &amp; font**: restyled to a blue (`#024793`) / navy
+  (`#012d5d`) / white palette using a single font family (Poppins), inspired
+  by a reference site the site owner liked. The original ACE navy/gold +
+  Roboto/Roboto Slab/Inter look is gone; every color lives in the
+  `CSS VARIABLES` section at the top of `assets/css/style.css` if you want
+  to adjust it further or revert.
+- **Course cards**: redesigned as a "poster" style — photo on top, bold blue
+  gradient panel below with a big uppercase course name — instead of the
+  original's plain white card body. Built with live HTML/CSS (not a
+  flattened image), so the text stays fully editable.
 - **"Our Courses" page**: the original WordPress page repeated some course
   card descriptions across mismatched cards (e.g. the Quran Classes blurb
   appeared under the PTE card). This rebuild shows each of the 7 courses
