@@ -188,6 +188,24 @@ section {
   width: 100%;
 }
 
+/* Outline button for use on light backgrounds (course pages), as opposed
+   to .btn-outline which is white-on-transparent for dark hero sections. */
+.btn-outline-navy {
+  background: transparent;
+  color: var(--color-navy);
+  border: 2px solid var(--color-navy);
+}
+.btn-outline-navy:hover {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
 
 /* =========================================================================
    4. TOP BAR + HEADER + NAVIGATION
@@ -295,6 +313,21 @@ section {
 
 .main-nav a.active {
   color: var(--color-gold-dark);
+}
+
+/* "Register" call-to-action link in the nav — styled as a pill button
+   instead of a plain text link, and skips the underline hover effect. */
+.main-nav a.nav-cta {
+  background: var(--color-gold);
+  color: var(--color-navy);
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+}
+.main-nav a.nav-cta:hover {
+  background: var(--color-gold-dark);
+}
+.main-nav a.nav-cta::after {
+  display: none;
 }
 
 .nav-toggle {
