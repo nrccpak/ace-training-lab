@@ -441,6 +441,7 @@ section {
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow);
+  border-top: 4px solid var(--color-navy);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
@@ -457,23 +458,22 @@ section {
   object-fit: cover;
 }
 
-/* "Poster" style panel — bold navy gradient with big uppercase heading,
-   replacing the old plain white card body. Matches the reference site's
-   course card graphics, built with real HTML/CSS instead of flattened
-   image files so the text stays fully editable. */
+/* Clean white card body — photo on top, plain white panel below with dark
+   text and a colored accent tag/border. Built with real HTML/CSS (not a
+   flattened image) so the text stays fully editable. */
 .course-card-body {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
-  color: var(--color-white);
+  background: var(--color-white);
+  color: var(--color-text);
 }
 
 .course-tag {
   display: inline-block;
   align-self: flex-start;
-  background: var(--color-white);
+  background: var(--color-bg-cream);
   color: var(--color-navy);
   font-family: var(--font-ui);
   font-weight: 700;
@@ -485,16 +485,15 @@ section {
 }
 
 .course-card h3 {
-  color: var(--color-white);
+  color: var(--color-navy);
   font-size: 1.4rem;
   font-weight: 800;
-  text-transform: uppercase;
   line-height: 1.25;
   margin-bottom: 0.5rem;
 }
 
 .course-card p {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-light);
   font-size: 0.95rem;
   flex-grow: 1;
 }
@@ -502,24 +501,15 @@ section {
 .course-card .seats {
   font-family: var(--font-ui);
   font-size: 0.85rem;
-  color: var(--color-white);
+  color: var(--color-navy);
   font-weight: 700;
+  padding-top: 0.75rem;
   margin-bottom: 1rem;
+  border-top: 1px solid var(--color-border);
 }
 
 .course-card .btn {
   align-self: flex-start;
-}
-
-/* The card panel background is already navy, so "Learn More" needs the
-   white solid button instead of the navy .btn-primary (which would blend
-   into the panel behind it). */
-.course-card .btn-primary {
-  background: var(--color-white);
-  color: var(--color-navy);
-}
-.course-card .btn-primary:hover {
-  background: var(--color-bg-cream);
 }
 
 
