@@ -1,2 +1,5 @@
 # Local preview server config (not needed for deployment)
 .claude/
+
+# Personal notes, not part of the site
+New Text Document.txt
