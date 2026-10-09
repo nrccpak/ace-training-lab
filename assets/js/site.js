@@ -168,7 +168,7 @@
         '<div><h3>Offices</h3>' + CFG.addresses.map(function (a) { return '<p>' + esc(a) + '</p>'; }).join('') +
         '<p>' + esc(CFG.hours) + '</p></div>' +
         '</div><div class="footer-bottom"><span>&copy; ' + new Date().getFullYear() + ' ACE Training Lab</span>' +
-        '<div><a href="' + ROOT + 'pages/privacy.html">Privacy Policy</a><a href="' + ROOT + 'pages/terms.html">Terms &amp; Conditions</a></div>' +
+        '<div><a href="' + ROOT + 'pages/privacy.html">Privacy Policy</a><a href="' + ROOT + 'pages/terms.html">Terms &amp; Conditions</a><a href="' + ROOT + 'admin/index.html">Admin</a></div>' +
         '</div></div></footer>' +
         '<a class="wa-float" href="' + waLink('Hello') + '" target="_blank" rel="noopener">WhatsApp</a>';
     }
