@@ -370,7 +370,14 @@ h3 { font-weight: 600; }
 [hidden] { display: none !important; }
 .stats .container { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 @media (max-width: 900px) {
-  .hero.hero-photo { background: var(--navy); padding: 0 0 40px; }
-  .hero.hero-photo::before { position: static; display: block; height: 230px; margin-bottom: 28px; background: url('../images/hero-student.jpg') 72% 22% / cover no-repeat; }
+  /* as on acetraininglab.com: the photo fills the hero, a navy fade on the left carries the text */
+  .hero.hero-photo { background: var(--navy) url('../images/hero-student.jpg') 68% top / cover no-repeat; padding: 44px 0 36px; }
+  .hero.hero-photo::before { position: absolute; display: block; height: auto; margin: 0; inset: 0;
+    background: linear-gradient(180deg, rgba(11, 19, 43, 0) 52%, rgba(11, 19, 43, 0.92) 78%),
+                linear-gradient(90deg, rgba(11, 19, 43, 0.96) 0%, rgba(11, 19, 43, 0.78) 38%, rgba(11, 19, 43, 0.10) 78%); }
+  .hero.hero-photo h1, .hero.hero-photo .hero-text > p { max-width: 62%; }
+  .hero.hero-photo h1 { font-size: 34px; line-height: 1.18; }
+  .hero.hero-photo h1 span { font-size: 0.72em; line-height: 1.25; }
+  .hero.hero-photo .hero-text > p { font-size: 16px; min-height: 150px; }
   .stats .container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
