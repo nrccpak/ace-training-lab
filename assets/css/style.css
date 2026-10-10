@@ -365,3 +365,12 @@ h3 { font-weight: 600; }
   .course-card .price { font-size: 13px; }
   .course-card .btn { min-width: 0; width: 100%; padding: 10px 8px; font-size: 14px; }
 }
+
+/* 14. HOME HERO ON PHONES: the photo sits above the text so it is always visible */
+[hidden] { display: none !important; }
+.stats .container { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+@media (max-width: 900px) {
+  .hero.hero-photo { background: var(--navy); padding: 0 0 40px; }
+  .hero.hero-photo::before { position: static; display: block; height: 230px; margin-bottom: 28px; background: url('../images/hero-student.jpg') 72% 22% / cover no-repeat; }
+  .stats .container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

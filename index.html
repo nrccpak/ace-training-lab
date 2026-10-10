@@ -38,12 +38,14 @@
           <div class="exam-pick">
             <span class="muted">Start with your exam:</span>
             <div class="pills">
-              <a href="courses/ielts.html">IELTS</a>
-              <a href="courses/oet.html">OET</a>
-              <a href="courses/pte.html">PTE</a>
-              <a href="courses/toefl.html">TOEFL</a>
-              <a href="courses/sat.html">SAT</a>
-              <a href="courses/quran.html">Quran</a>
+              <!-- A button disappears by itself when its course is hidden or deleted in admin -->
+              <a data-course="ielts" href="courses/ielts.html">IELTS</a>
+              <a data-course="toefl" href="courses/toefl.html">TOEFL</a>
+              <a data-course="pte" href="courses/pte.html">PTE</a>
+              <a data-course="oet" href="courses/oet.html">OET</a>
+              <a data-course="spoken-english" href="courses/spoken-english.html">Spoken English</a>
+              <a data-course="sat" href="courses/sat.html">SAT</a>
+              <a data-course="quran" href="courses/quran.html">Quran</a>
             </div>
           </div>
         </div>
@@ -53,9 +55,10 @@
     <!-- Figures come from the instructor profiles. Edit the numbers here if they change. -->
     <section class="stats" aria-label="ACE Training Lab in numbers">
       <div class="container">
-        <div class="stat"><strong>500+</strong><span>IELTS students coached</span></div>
-        <div class="stat"><strong>700+</strong><span>OET students trained</span></div>
-        <div class="stat"><strong>12 years</strong><span>teaching Quran and Tajweed</span></div>
+        <div class="stat" data-course="ielts"><strong>500+</strong><span>IELTS students coached</span></div>
+        <div class="stat" data-course="oet"><strong>700+</strong><span>OET students trained</span></div>
+        <div class="stat" data-course="quran"><strong>12 years</strong><span>teaching Quran and Tajweed</span></div>
+        <div class="stat"><strong>Live</strong><span>online classes, small batches</span></div>
         <div class="stat"><strong>Free</strong><span>demo class before you pay</span></div>
       </div>
     </section>

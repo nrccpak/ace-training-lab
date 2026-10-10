@@ -240,8 +240,17 @@
     if (box) {
       box.innerHTML = data.courses.map(courseCard).join('') + materialCard();
     }
+    // anything on the page tied to a course (exam buttons, numbers) shows only while that course is on the website
+    var shown = data.courses.map(function (c) { return c.id; });
+    document.querySelectorAll('main [data-course]').forEach(function (el) {
+      el.hidden = shown.indexOf(el.getAttribute('data-course')) < 0;
+    });
     var people = $('instructors');
-    if (people) people.innerHTML = Object.keys(window.ACE_INSTRUCTORS || {}).map(instructorTile).join('');
+    if (people) {
+      var all = Object.keys(window.ACE_INSTRUCTORS || {});
+      var teaching = all.filter(function (k) { return data.courses.some(function (c) { return c.instructor === k; }); });
+      people.innerHTML = (teaching.length ? teaching : all).map(instructorTile).join('');
+    }
     renderResults(data, 3);
   }
 
