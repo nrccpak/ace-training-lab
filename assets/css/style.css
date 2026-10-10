@@ -356,11 +356,12 @@ h3 { font-weight: 600; }
   .title-center { margin-bottom: 28px; }
 }
 @media (max-width: 640px) {
-  .course-grid { grid-template-columns: minmax(0, 1fr); }
-  .course-card { flex-direction: row; text-align: left; border-radius: 18px; }
-  .course-card > img { width: 38%; aspect-ratio: auto; align-self: stretch; }
-  .course-card .body { align-items: flex-start; padding: 16px; gap: 8px; }
-  .course-card h3 { font-size: 17px; }
+  /* phones: two posters across, each shown whole (they carry their own text), with the name and button under it */
+  .course-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .course-card { border-radius: 16px; }
+  .course-card .body { padding: 12px 10px 14px; gap: 8px; }
+  .course-card h3 { font-size: 14px; letter-spacing: 0.2px; }
   .course-card p { display: none; }
-  .course-card .btn { min-width: 0; padding: 10px 16px; font-size: 14px; }
+  .course-card .price { font-size: 13px; }
+  .course-card .btn { min-width: 0; width: 100%; padding: 10px 8px; font-size: 14px; }
 }
