@@ -218,3 +218,7 @@ legend { padding: 0; font-size: 22px; font-weight: 800; color: var(--navy); marg
 .result figcaption { display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: var(--muted); margin-top: auto; }
 .result figcaption strong { color: var(--navy); font-size: 16px; }
 .result .score { align-self: flex-start; margin-top: 8px; background: var(--navy); color: var(--white); font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+
+/* Keep each price together on one line (for example "Rs 32,000" never splits) */
+.fee-card s, .price, .price s { white-space: nowrap; }
+.fee-card .big { display: inline-block; margin-right: 8px; }
