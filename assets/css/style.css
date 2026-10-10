@@ -308,9 +308,10 @@ h3 { font-weight: 600; }
 
 /* home hero: photo behind, white heading, gold second line */
 .hero.hero-photo { background: var(--navy) url('../images/hero-student.jpg') center top / cover no-repeat; position: relative; padding: 96px 0 104px; }
-.hero.hero-photo::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11, 19, 43, 0.94) 0%, rgba(11, 19, 43, 0.82) 42%, rgba(11, 19, 43, 0.30) 100%); }
+.hero.hero-photo::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11, 19, 43, 0.97) 0%, rgba(11, 19, 43, 0.88) 30%, rgba(11, 19, 43, 0.35) 52%, rgba(11, 19, 43, 0) 72%); }
 .hero.hero-photo .container { position: relative; }
-.hero.hero-photo .hero-text { flex: 0 1 600px; }
+.hero.hero-photo .hero-text { flex: 0 1 520px; }
+.hero.hero-photo h1, .hero.hero-photo .hero-text p { text-shadow: 0 2px 10px rgba(11, 19, 43, 0.55); }
 .hero.hero-photo h1 { color: var(--white); font-size: clamp(34px, 5vw, 48px); line-height: 1.2; }
 .hero.hero-photo h1 span { display: block; color: var(--gold); font-size: 0.75em; margin-top: 10px; }
 .hero.hero-photo .hero-text p { color: #E0E0E0; }
@@ -374,7 +375,7 @@ h3 { font-weight: 600; }
   .hero.hero-photo { background: var(--navy) url('../images/hero-student.jpg') 68% top / cover no-repeat; padding: 44px 0 36px; }
   .hero.hero-photo::before { position: absolute; display: block; height: auto; margin: 0; inset: 0;
     background: linear-gradient(180deg, rgba(11, 19, 43, 0) 52%, rgba(11, 19, 43, 0.92) 78%),
-                linear-gradient(90deg, rgba(11, 19, 43, 0.96) 0%, rgba(11, 19, 43, 0.78) 38%, rgba(11, 19, 43, 0.10) 78%); }
+                linear-gradient(90deg, rgba(11, 19, 43, 0.96) 0%, rgba(11, 19, 43, 0.74) 36%, rgba(11, 19, 43, 0) 70%); }
   .hero.hero-photo h1, .hero.hero-photo .hero-text > p { max-width: 62%; }
   .hero.hero-photo h1 { font-size: 34px; line-height: 1.18; }
   .hero.hero-photo h1 span { font-size: 0.72em; line-height: 1.25; }
