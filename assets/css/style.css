@@ -222,3 +222,58 @@ legend { padding: 0; font-size: 22px; font-weight: 800; color: var(--navy); marg
 /* Keep each price together on one line (for example "Rs 32,000" never splits) */
 .fee-card s, .price, .price s { white-space: nowrap; }
 .fee-card .big { display: inline-block; margin-right: 8px; }
+
+/* 12. HOME PAGE NUMBERS, EXAM LINKS, PHONE LAYOUT */
+.stats { background: var(--white); border-bottom: 1px solid var(--line); }
+.stats .container { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 24px; padding-top: 28px; padding-bottom: 28px; }
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat strong { font-size: 30px; line-height: 1.1; font-weight: 800; color: var(--navy); }
+.stat span { font-size: 14px; color: var(--muted); }
+.exam-pick { display: flex; flex-direction: column; gap: 10px; }
+.exam-pick > span { font-size: 15px; }
+.pills a { display: inline-flex; align-items: center; min-height: 44px; background: var(--white); border: 1px solid #C3CCDA; border-radius: 999px; padding: 6px 18px; font-size: 15px; font-weight: 700; color: var(--navy); }
+.pills a:hover { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.wa-float { width: 58px; height: 58px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.mobile-bar { display: none; }
+.btn-wa { background: #128C4B; color: var(--white); }
+.btn-wa:hover { background: #0E7A40; color: var(--white); }
+
+@media (max-width: 900px) {
+  /* one-line top bar: the message is dropped, the two contact links stay */
+  .topbar { font-size: 13px; }
+  .topbar .container { padding-top: 8px; padding-bottom: 8px; justify-content: center; }
+  .topbar .container > span { display: none; }
+  .topbar-links { gap: 6px 18px; justify-content: center; }
+  .logo img { width: 52px; height: 49px; }
+  .site-header .container { padding-top: 6px; padding-bottom: 6px; }
+
+  .hero { padding: 32px 0 36px; }
+  .hero .container { gap: 28px; }
+  .hero-text { gap: 18px; }
+  .hero-img img { height: 210px; }
+
+  .stats .container { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 22px; padding-bottom: 22px; }
+  .stat strong { font-size: 24px; }
+
+  /* shorter course cards */
+  #course-groups .card > img { height: 110px; }
+  #course-groups .card-body { padding: 18px; gap: 10px; }
+  #course-groups .card-body > p { display: none; }
+
+  /* instructors and results: swipe sideways instead of a long column */
+  #instructors, #results > .grid { display: flex; overflow-x: auto; gap: 14px; scroll-snap-type: x mandatory; padding-bottom: 10px; margin-right: -24px; padding-right: 24px; }
+  #instructors > .tile, #results > .grid > .result { flex: 0 0 78%; scroll-snap-align: start; }
+
+  /* "why" points two across, enrol steps tighter */
+  .section-navy .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 18px; }
+  .why h3 { font-size: 17px; }
+  .why p { font-size: 14px; }
+  .tile.white { padding: 18px; }
+  .tile .num { font-size: 30px; }
+
+  /* fixed action bar at the bottom of the screen */
+  .mobile-bar { display: flex; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; background: var(--white); border-top: 1px solid var(--line); padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); box-shadow: 0 -6px 18px rgba(15, 42, 74, 0.10); }
+  .mobile-bar .btn { flex: 1 1 0; padding: 13px 10px; font-size: 15px; }
+  body.has-mobile-bar { padding-bottom: 76px; }
+  body.has-mobile-bar .wa-float { display: none; }
+}

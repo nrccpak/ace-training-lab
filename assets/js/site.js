@@ -190,7 +190,11 @@
         '</div><div class="footer-bottom"><span>&copy; ' + new Date().getFullYear() + ' ACE Training Lab</span>' +
         '<div><a href="' + ROOT + 'pages/privacy.html">Privacy Policy</a><a href="' + ROOT + 'pages/terms.html">Terms &amp; Conditions</a><a href="' + ROOT + 'admin/index.html">Admin</a></div>' +
         '</div></div></footer>' +
-        '<a class="wa-float" href="' + waLink('Hello') + '" target="_blank" rel="noopener">WhatsApp</a>';
+        '<a class="wa-float" href="' + waLink('Hello') + '" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20l1.2-5.1A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' +
+        (PAGE === 'demo' || PAGE === 'register' || PAGE === 'thanks' ? '' :
+          '<div class="mobile-bar"><a class="btn btn-gold" href="' + ROOT + 'pages/demo.html">Free demo class</a>' +
+          '<a class="btn btn-wa" href="' + waLink('Hello') + '" target="_blank" rel="noopener">WhatsApp</a></div>');
+      document.body.classList.toggle('has-mobile-bar', !!footer.querySelector('.mobile-bar'));
     }
 
     document.querySelectorAll('[data-wa]').forEach(function (a) {
