@@ -437,6 +437,15 @@
 
   /* ---------- start ---------- */
   loadAnalytics();
+  // Show the header and footer at once, from the last saved copy of the course list (or the built-in one).
+  // Everything is drawn again as soon as the live list arrives from the Google Sheet.
+  (function () {
+    var first = null;
+    try { first = (JSON.parse(localStorage.getItem(CACHE_KEY) || 'null') || {}).data; } catch (e) { first = null; }
+    first = first || window.ACE_DATA || { courses: [] };
+    applySettings(first.settings);
+    renderLayout((first.courses || []).filter(isShown));
+  })();
   loadData().then(function (data) {
     applySettings(data.settings);
     data = { courses: (data.courses || []).filter(isShown), batches: data.batches || [], results: data.results || [] };
