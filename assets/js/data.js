@@ -5,31 +5,38 @@
 window.ACE_DATA = {
   courses: [
     {
-      id: 'ielts', name: 'IELTS Academic and General', group: 'English tests', show: true,
-      short: 'Preparation for all four IELTS modules, with practice tests and feedback included.',
+      id: 'ielts', name: 'IELTS Preparation Online', group: 'English tests', show: true,
+      short: 'Master Listening, Reading, Writing, and Speaking with certified trainers and proven strategies.',
       level: 'Beginner to Advanced', duration: '4–6 weeks', mode: 'Online, live or recorded',
-      fee: '16,000', oldFee: '32,000', image: 'course-ielts-cubes.jpg', instructor: 'aneeqa',
+      fee: '16,000', oldFee: '32,000', image: 'course-ielts.jpg', instructor: 'aneeqa',
       learn: 'Listening: Audio practice, note-taking and understanding accents.\nReading: Skimming, scanning, paragraph matching and time management.\nWriting: Task 1 (graph or letter), Task 2 (essay), vocabulary and coherence.\nSpeaking: Fluency training, mock interviews and cue card strategy.'
     },
     {
-      id: 'oet', name: 'OET for Healthcare Professionals', group: 'English tests', show: true,
-      short: 'Healthcare-specific practice tailored to your profession: nursing, medicine and others.',
-      level: 'Beginner to Advanced', duration: '6 weeks', mode: 'Online',
-      fee: '', oldFee: '', image: 'course-oet-training.jpg', instructor: 'nouman',
-      learn: 'Listening and Reading: Healthcare-specific case studies.\nWriting: Referrals and discharge summaries.\nSpeaking: Role-plays between doctor or nurse and patient.'
-    },
-    {
-      id: 'toefl-pte', name: 'TOEFL, PTE and LangCert', group: 'English tests', show: true,
-      short: 'Test-specific strategies and time-bound tasks, with 1-on-1 feedback and Q&A sessions.',
+      id: 'pte', name: 'PTE Preparation Online', group: 'English tests', show: true,
+      short: 'Master Speaking, Writing, Reading, and Listening with expert trainers and proven strategies.',
       level: 'Beginner to Advanced', duration: '4–6 weeks', mode: 'Online',
-      fee: '', oldFee: '', image: 'course-toefl-student.jpg', instructor: '',
+      fee: '', oldFee: '', image: 'course-pte.jpg', instructor: '',
       learn: 'Content: Interactive, AI-based mock tests, grammar correction and timed drills.\nFocus: Test-specific strategies and time-bound tasks.\nSupport: 1-on-1 feedback and Q&A sessions.'
     },
     {
-      id: 'spoken-english', name: 'Online Spoken English', group: 'English tests', show: true,
-      short: 'Speak English fluently from anywhere, with live virtual classes and personal feedback.',
+      id: 'toefl', name: 'TOEFL Preparation Online', group: 'English tests', show: true,
+      short: 'Master Listening, Reading, Writing, and Speaking with expert-led live classes.',
+      level: 'Beginner to Advanced', duration: '4–6 weeks', mode: 'Online',
+      fee: '', oldFee: '', image: 'course-toefl.jpg', instructor: '',
+      learn: 'Content: Interactive, AI-based mock tests, grammar correction and timed drills.\nFocus: Test-specific strategies and time-bound tasks.\nSupport: 1-on-1 feedback and Q&A sessions.'
+    },
+    {
+      id: 'oet', name: 'OET Preparation Online', group: 'English tests', show: true,
+      short: 'Master Occupational English Test strategies for healthcare professionals with expert trainers.',
+      level: 'Beginner to Advanced', duration: '6 weeks', mode: 'Online',
+      fee: '', oldFee: '', image: 'course-oet.jpg', instructor: 'nouman',
+      learn: 'Listening and Reading: Healthcare-specific case studies.\nWriting: Referrals and discharge summaries.\nSpeaking: Role-plays between doctor or nurse and patient.'
+    },
+    {
+      id: 'spoken-english', name: 'English Spoken Course Online', group: 'English tests', show: true,
+      short: 'Master fluent communication, confident conversations, and advanced vocabulary with expert trainers.',
       level: 'Beginner, Intermediate, Advanced', duration: '', mode: 'Online, live',
-      fee: '', oldFee: '', image: 'course-spoken-english.jpg', instructor: '',
+      fee: '', oldFee: '', image: 'course-spoken.jpg', instructor: '',
       learn: 'Placement test: A quick online assessment places you in the right level.\nLive virtual classes: Real-time sessions with discussions, role-plays and activities.\nPersonal attention: One-on-one feedback, even in small groups.\nFlexible schedule: Lessons fit around work, studies or personal commitments.'
     },
     {

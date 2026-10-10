@@ -211,9 +211,15 @@
       '<div class="eyebrow">' + esc(p.role) + '</div><h3>' + esc(p.name) + '</h3><p>' + esc(p.bio) + '</p></div>';
   }
   function courseCard(c) {
-    return '<div class="card"><img loading="lazy" width="455" height="190" src="' + img(c.image) + '" alt="">' +
-      '<div class="card-body"><h3>' + esc(c.name) + '</h3><p>' + esc(c.short) + '</p>' + feeHtml(c) +
-      '<a class="btn btn-navy" href="' + courseUrl(c) + '">View course</a></div></div>';
+    return '<div class="course-card"><img loading="lazy" width="400" height="384" src="' + img(c.image) + '" alt="">' +
+      '<div class="body"><h3>' + esc(c.name) + '</h3><p>' + esc(c.short) + '</p>' + (c.fee ? feeHtml(c) : '') +
+      '<a class="btn btn-gold" href="' + courseUrl(c) + '">View Details</a></div></div>';
+  }
+  /** The study-material pack shown as the last card on the home page. */
+  function materialCard() {
+    return '<div class="course-card"><img loading="lazy" width="400" height="384" src="' + img('course-material.jpg') + '" alt="">' +
+      '<div class="body"><h3>Digital Study Material</h3><p>IELTS mock tests, TOEFL resources, PTE exam papers and OET guides, all in one downloadable pack.</p>' +
+      '<a class="btn btn-gold" target="_blank" rel="noopener" href="' + waLink('Hello, I would like the Digital Study Material pack.') + '">Get Material</a></div></div>';
   }
   function resultCard(r) {
     return '<figure class="result"><blockquote>&ldquo;' + esc(r.quote) + '&rdquo;</blockquote>' +
@@ -232,15 +238,7 @@
   function pageHome(data) {
     var box = $('course-groups');
     if (box) {
-      box.innerHTML = groupsOf(data.courses).map(function (g) {
-        var info = GROUP_INFO[g.name] || { image: g.courses[0].image, text: '' };
-        return '<div class="card"><img loading="lazy" width="455" height="190" src="' + img(info.image) + '" alt="">' +
-          '<div class="card-body">' + (info.who ? '<div class="eyebrow">' + esc(info.who) + '</div>' : '') +
-          '<h3>' + esc(g.name) + '</h3><p>' + esc(info.text) + '</p><div class="link-list">' +
-          g.courses.map(function (c) {
-            return '<a href="' + courseUrl(c) + '">' + esc(c.name) + ' <span aria-hidden="true">&rsaquo;</span></a>';
-          }).join('') + '</div></div></div>';
-      }).join('');
+      box.innerHTML = data.courses.map(courseCard).join('') + materialCard();
     }
     var people = $('instructors');
     if (people) people.innerHTML = Object.keys(window.ACE_INSTRUCTORS || {}).map(instructorTile).join('');
@@ -253,8 +251,10 @@
     var box = $('course-list');
     if (!box) return;
     box.innerHTML = groupsOf(data.courses).map(function (g) {
-      return '<section class="stack" id="' + esc(g.name) + '" style="gap:24px"><h2>' + esc(g.name) + '</h2>' +
-        '<div class="grid grid-3">' + g.courses.map(courseCard).join('') + '</div></section>';
+      var info = GROUP_INFO[g.name] || {};
+      return '<section class="stack" id="' + esc(g.name) + '" style="gap:24px"><div class="stack" style="gap:6px">' +
+        (info.who ? '<div class="eyebrow">' + esc(info.who) + '</div>' : '') + '<h2>' + esc(g.name) + '</h2></div>' +
+        '<div class="course-grid">' + g.courses.map(courseCard).join('') + '</div></section>';
     }).join('');
   }
 
