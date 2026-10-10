@@ -211,7 +211,7 @@
       '<div class="eyebrow">' + esc(p.role) + '</div><h3>' + esc(p.name) + '</h3><p>' + esc(p.bio) + '</p></div>';
   }
   function courseCard(c) {
-    return '<div class="course-card"><img loading="lazy" width="400" height="384" src="' + img(c.image) + '" alt="">' +
+    return '<div class="course-card"><img loading="lazy" width="400" height="384" src="' + img(c.image) + '" alt="' + esc(c.name) + '">' +
       '<div class="body"><h3>' + esc(c.name) + '</h3><p>' + esc(c.short) + '</p>' + (c.fee ? feeHtml(c) : '') +
       '<a class="btn btn-gold" href="' + courseUrl(c) + '">View Details</a></div></div>';
   }
@@ -277,7 +277,8 @@
         '<p class="muted">This course may have been removed.</p><div><a class="btn btn-navy" href="' + ROOT + 'courses/index.html">See all courses</a></div></div></section>';
       return;
     }
-    document.title = c.name + ' | ACE Training Lab';
+    /* Pages with their own file keep the search title written in the file. */
+    if (!document.body.getAttribute('data-course')) document.title = c.name + ' | ACE Training Lab';
     track('view_course', { course: c.id });
     var facts = [['Level', c.level], ['Duration', c.duration], ['Mode', c.mode]].filter(function (f) { return f[1]; })
       .map(function (f) { return '<div class="fact"><small>' + f[0] + '</small><strong>' + esc(f[1]) + '</strong></div>'; }).join('');
