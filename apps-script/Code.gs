@@ -12,13 +12,15 @@
  *   NOTIFY_EMAIL     optional. Where registration emails go. Default: the sheet owner.
  */
 
-var TAB = { courses: 'Courses', batches: 'Batches', regs: 'Registrations', leads: 'Leads', results: 'Results' };
+var TAB = { courses: 'Courses', batches: 'Batches', regs: 'Registrations', leads: 'Leads', results: 'Results', settings: 'Settings' };
 var PROOF_FOLDER = 'ACE Registrations - Payment proofs';
 var MAX_PROOF_BYTES = 10 * 1024 * 1024;
 var DATA_CACHE_SECONDS = 300;        // public course data is cached this long (cleared on every admin change)
 var MAX_FORMS_PER_10_MIN = 40;       // protection against form spam
 var ADMIN_LIST_LIMIT = 300;          // newest rows shown in the admin page
 var ACADEMY = 'ACE Training Lab';
+var SETTING_KEYS = ['whatsapp', 'phone1', 'phone2', 'phone3', 'email', 'address1', 'address2', 'hours', 'topbar', 'accounts', 'notifyEmail'];
+var PRIVATE_SETTINGS = ['notifyEmail'];   // never sent to the public website
 var REG_FIELDS = ['course', 'courseName', 'batch', 'name', 'father', 'dob', 'gender', 'mobile', 'email', 'nationality', 'address'];
 var COURSE_FIELDS = ['id', 'name', 'group', 'short', 'level', 'duration', 'mode', 'fee', 'oldFee', 'image', 'instructor', 'learn', 'show'];
 
@@ -35,7 +37,8 @@ function doGet(e) {
     var out = JSON.stringify({
       courses: readRows(TAB.courses).filter(function (c) { return isTrue(c.show); }).map(cleanCourse),
       batches: readRows(TAB.batches).map(cleanBatch),
-      results: readRows(TAB.results).filter(function (r) { return isTrue(r.show); }).map(cleanResult)
+      results: readRows(TAB.results).filter(function (r) { return isTrue(r.show); }).map(cleanResult),
+      settings: publicSettings()
     });
     try { cache.put('public_data', out, DATA_CACHE_SECONDS); } catch (err) { /* too large to cache: still served */ }
     return ContentService.createTextOutput(out).setMimeType(ContentService.MimeType.JSON);
@@ -87,7 +90,7 @@ function register(body) {
 
   try {
     MailApp.sendEmail({
-      to: prop('NOTIFY_EMAIL') || Session.getEffectiveUser().getEmail(),
+      to: notifyEmail(),
       subject: 'New registration: ' + text(f.name) + ' - ' + text(f.courseName || f.course),
       body: 'A new registration has arrived.\n\n' +
         'Course: ' + text(f.courseName || f.course) + '\n' +
@@ -140,7 +143,7 @@ function lead(body) {
 
   try {
     MailApp.sendEmail({
-      to: prop('NOTIFY_EMAIL') || Session.getEffectiveUser().getEmail(),
+      to: notifyEmail(),
       subject: 'Demo class request: ' + text(f.name) + ' - ' + text(f.courseName || f.course || 'no course chosen'),
       body: 'Someone asked for a free demo class.\n\n' +
         'Name: ' + text(f.name) + '\n' +
@@ -188,7 +191,8 @@ function adminAction(body) {
             .forEach(function (k) { o[k] = r[k] instanceof Date ? stampOf(r[k], 'yyyy-MM-dd HH:mm') : String(r[k] == null ? '' : r[k]); });
           return o;
         }).reverse().slice(0, ADMIN_LIST_LIMIT),
-        results: readRows(TAB.results).map(function (r) { var o = cleanResult(r); o.row = r._row; o.show = isTrue(r.show); return o; })
+        results: readRows(TAB.results).map(function (r) { var o = cleanResult(r); o.row = r._row; o.show = isTrue(r.show); return o; }),
+        settings: readSettings()
       };
 
     case 'adminSaveCourse':   return saveCourse(body.course || {});
@@ -199,6 +203,7 @@ function adminAction(body) {
     case 'adminSetLeadStatus': return setStatus(TAB.leads, body.row, text(body.status), ['New', 'Contacted', 'Demo done', 'Joined', 'Not interested']);
     case 'adminSaveResult':   return saveResult(body.result || {});
     case 'adminDeleteResult': return deleteRow(TAB.results, body.row);
+    case 'adminSaveSettings': return saveSettings(body.settings || {});
   }
   return { ok: false, error: 'Unknown action' };
 }
@@ -353,6 +358,47 @@ function cleanBatch(b) {
     time: String(b.time || ''),
     seats: String(b.seats == null ? '' : b.seats)
   };
+}
+
+/** Site settings (phone numbers, email, addresses...) kept in the Settings tab as key / value rows. */
+function readSettings() {
+  var sh = SpreadsheetApp.getActive().getSheetByName(TAB.settings);
+  var out = {};
+  if (!sh || sh.getLastRow() < 2) return out;
+  sh.getRange(2, 1, sh.getLastRow() - 1, 2).getValues().forEach(function (r) {
+    var k = String(r[0]).trim();
+    if (SETTING_KEYS.indexOf(k) >= 0) out[k] = String(r[1] == null ? '' : r[1]);
+  });
+  return out;
+}
+
+function publicSettings() {
+  var s = readSettings();
+  PRIVATE_SETTINGS.forEach(function (k) { delete s[k]; });
+  return s;
+}
+
+function saveSettings(input) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var ss = SpreadsheetApp.getActive();
+    var sh = ss.getSheetByName(TAB.settings) || ss.insertSheet(TAB.settings);
+    var current = readSettings();
+    var rows = SETTING_KEYS.map(function (k) {
+      var v = Object.prototype.hasOwnProperty.call(input, k) ? String(input[k] == null ? '' : input[k]).trim().slice(0, 3000) : (current[k] || '');
+      return [k, /^[=+\-@]/.test(v) ? "'" + v : v];
+    });
+    sh.getRange(1, 1, 1, 2).setValues([['key', 'value']]);
+    sh.getRange(2, 1, rows.length, 2).setNumberFormat('@').setValues(rows);
+    return { ok: true };
+  } finally { lock.releaseLock(); }
+}
+
+/** Where registration and demo emails go: Settings tab, then the NOTIFY_EMAIL property, then the sheet owner. */
+function notifyEmail() {
+  var s = readSettings().notifyEmail;
+  return (s && /@/.test(s)) ? s : (prop('NOTIFY_EMAIL') || Session.getEffectiveUser().getEmail());
 }
 
 function cleanResult(r) {

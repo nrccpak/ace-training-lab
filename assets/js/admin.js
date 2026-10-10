@@ -11,7 +11,9 @@
   var KEY = 'ace_admin_pw';
   var password = '';
   var LEAD_STATUSES = ['New', 'Contacted', 'Demo done', 'Joined', 'Not interested'];
-  var data = { courses: [], batches: [], registrations: [], leads: [], results: [] };
+  var SETTING_KEYS = ['whatsapp', 'phone1', 'phone2', 'phone3', 'email', 'notifyEmail', 'address1', 'address2', 'hours', 'topbar', 'accounts'];
+  var settingsLoaded = false;
+  var data = { courses: [], batches: [], registrations: [], leads: [], results: [], settings: {} };
   var confirmId = null;        // which Delete button is waiting for "Yes"
 
   function $(id) { return document.getElementById(id); }
@@ -50,7 +52,9 @@
       data = res;
       data.leads = res.leads || [];        // older backend versions do not send these
       data.results = res.results || [];
+      data.settings = res.settings || {};
       renderAll();
+      if (!settingsLoaded) { fillSettings(); settingsLoaded = true; }   // do not overwrite what is being typed
       return res;
     });
   }
@@ -84,7 +88,7 @@
   document.querySelectorAll('.side [data-view]').forEach(function (btn) {
     btn.addEventListener('click', function () {
       document.querySelectorAll('.side [data-view]').forEach(function (b) { b.classList.toggle('on', b === btn); });
-      ['courses', 'batches', 'leads', 'regs', 'results'].forEach(function (v) { $('view-' + v).classList.toggle('hidden', v !== btn.getAttribute('data-view')); });
+      ['courses', 'batches', 'leads', 'regs', 'results', 'settings'].forEach(function (v) { $('view-' + v).classList.toggle('hidden', v !== btn.getAttribute('data-view')); });
       $('msg').className = 'form-msg';
     });
   });
@@ -218,6 +222,25 @@
     e.preventDefault();
     save('adminSaveBatch', { batch: { courseId: $('b-course').value, start: $('b-start').value, time: $('b-time').value.trim(), seats: $('b-seats').value.trim() } }, 'Batch added.')
       .then(function (ok) { if (ok) e.target.reset(); });
+  });
+
+  /* ---------- site settings ---------- */
+  function fillSettings() {
+    var cfg = window.ACE_CONFIG, s = data.settings;
+    var defaults = {
+      whatsapp: cfg.whatsapp, phone1: cfg.phones[0], phone2: cfg.phones[1], phone3: cfg.phones[2], email: cfg.email, notifyEmail: '',
+      address1: cfg.addresses[0], address2: cfg.addresses[1], hours: cfg.hours, topbar: 'Live online classes with expert instructors', accounts: ''
+    };
+    var saved = Object.keys(s).length > 0;       // once anything is saved, the sheet is the source
+    SETTING_KEYS.forEach(function (k) { $('t-' + k).value = saved ? (s[k] || '') : (defaults[k] || ''); });
+  }
+  $('settings-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var out = {};
+    SETTING_KEYS.forEach(function (k) { out[k] = $('t-' + k).value.trim(); });
+    out.whatsapp = out.whatsapp.replace(/[^0-9]/g, '');
+    if (out.whatsapp.length < 8) { note('error', 'The WhatsApp number looks too short. Include the country code, for example 923418905188.'); return; }
+    save('adminSaveSettings', { settings: out }, 'Settings saved.').then(function (ok) { if (ok) $('t-whatsapp').value = out.whatsapp; });
   });
 
   /* ---------- result form ---------- */

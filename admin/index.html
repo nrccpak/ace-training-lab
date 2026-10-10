@@ -59,6 +59,7 @@
       <button type="button" data-view="leads">Demo requests</button>
       <button type="button" data-view="regs">Registrations</button>
       <button type="button" data-view="results">Student results</button>
+      <button type="button" data-view="settings">Site settings</button>
       <a href="../index.html" target="_blank" rel="noopener">View website</a>
       <button type="button" id="logout" style="margin-top:16px;color:#D3DCEA">Log out</button>
     </nav>
@@ -160,6 +161,38 @@
           <thead><tr><th>Student</th><th>Course</th><th>Result</th><th>On website</th><th style="text-align:right">Actions</th></tr></thead>
           <tbody id="result-rows"></tbody>
         </table></div>
+      </section>
+
+      <!-- SITE SETTINGS -->
+      <section id="view-settings" class="stack hidden" style="gap:24px">
+        <div class="head"><div><h1>Site settings</h1><p class="muted" style="font-size:15px">Contact details shown on every page. Changes appear on the website within about 10 minutes.</p></div></div>
+        <form class="panel" id="settings-form">
+          <h2 style="font-size:22px">Phone and WhatsApp</h2>
+          <div class="fields">
+            <div class="field"><label for="t-whatsapp">WhatsApp number, with country code</label><input id="t-whatsapp" inputmode="tel" required placeholder="923418905188"></div>
+            <div class="field"><label for="t-phone1">Phone 1 (shown in the top bar)</label><input id="t-phone1" inputmode="tel" required></div>
+            <div class="field"><label for="t-phone2">Phone 2 (optional)</label><input id="t-phone2" inputmode="tel"></div>
+            <div class="field"><label for="t-phone3">Phone 3 (optional)</label><input id="t-phone3" inputmode="tel"></div>
+          </div>
+          <h2 style="font-size:22px">Email</h2>
+          <div class="fields">
+            <div class="field"><label for="t-email">Email shown on the website</label><input id="t-email" type="email" required></div>
+            <div class="field"><label for="t-notifyEmail">Send registrations and demo requests to (not shown publicly)</label><input id="t-notifyEmail" type="email" placeholder="Leave empty to use the sheet owner's email"></div>
+          </div>
+          <h2 style="font-size:22px">Addresses and hours</h2>
+          <div class="field"><label for="t-address1">Address 1</label><input id="t-address1"></div>
+          <div class="field"><label for="t-address2">Address 2 (optional)</label><input id="t-address2"></div>
+          <div class="fields">
+            <div class="field"><label for="t-hours">Working hours</label><input id="t-hours"></div>
+            <div class="field"><label for="t-topbar">Message in the top bar</label><input id="t-topbar"></div>
+          </div>
+          <h2 style="font-size:22px">Payment accounts</h2>
+          <div class="field">
+            <label for="t-accounts">Shown on the registration page. One account per line, parts separated by | </label>
+            <textarea id="t-accounts" rows="5" placeholder="HBL - Habib Bank Limited | Account title | Account number or IBAN&#10;JazzCash | 0300 1234567"></textarea>
+          </div>
+          <div><button class="btn btn-navy" type="submit">Save settings</button></div>
+        </form>
       </section>
     </main>
   </div>

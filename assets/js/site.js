@@ -108,6 +108,26 @@
       .catch(function () { return cached ? cached.data : fallback; });
   }
 
+  /** Contact details saved in the admin page replace the defaults from config.js. */
+  function applySettings(s) {
+    if (!s) return;
+    var filled = function (v) { return String(v == null ? '' : v).trim(); };
+    var digits = filled(s.whatsapp).replace(/[^0-9]/g, '');
+    if (digits.length >= 8) CFG.whatsapp = digits;
+    var phones = [s.phone1, s.phone2, s.phone3].map(filled).filter(Boolean);
+    if (phones.length) CFG.phones = phones;
+    if (/^[^@\s]+@[^@\s]+$/.test(filled(s.email))) CFG.email = filled(s.email);
+    var addresses = [s.address1, s.address2].map(filled).filter(Boolean);
+    if (addresses.length) CFG.addresses = addresses;
+    if (filled(s.hours)) CFG.hours = filled(s.hours);
+    if (filled(s.topbar)) CFG.topbar = filled(s.topbar);
+    var accounts = filled(s.accounts).split('\n').map(function (line) {
+      var parts = line.split('|').map(filled).filter(Boolean);
+      return parts.length ? { bank: parts[0], lines: parts.slice(1) } : null;
+    }).filter(Boolean);
+    if (accounts.length) CFG.accounts = accounts;
+  }
+
   /* ---------- header and footer ---------- */
   function renderLayout(courses) {
     var nav = [
@@ -135,7 +155,7 @@
     if (header) {
       header.innerHTML =
         '<a href="#main" class="skip-link">Skip to content</a>' +
-        '<div class="topbar"><div class="container"><span>Live online classes with expert instructors</span>' +
+        '<div class="topbar"><div class="container"><span>' + esc(CFG.topbar || 'Live online classes with expert instructors') + '</span>' +
         '<div class="topbar-links"><a href="tel:' + CFG.phones[0].replace(/[^+\d]/g, '') + '">Call ' + esc(CFG.phones[0]) + '</a>' +
         '<a class="wa" href="' + waLink('Hello') + '" target="_blank" rel="noopener">WhatsApp +' + esc(CFG.whatsapp) + '</a></div></div></div>' +
         '<div class="site-header"><div class="container">' +
@@ -405,6 +425,7 @@
   /* ---------- start ---------- */
   loadAnalytics();
   loadData().then(function (data) {
+    applySettings(data.settings);
     data = { courses: (data.courses || []).filter(isShown), batches: data.batches || [], results: data.results || [] };
     renderLayout(data.courses);
     ({ home: pageHome, hub: pageHub, course: pageCourse, about: pageAbout, contact: pageContact, register: pageRegister, demo: pageDemo, results: pageResults }[PAGE] || function () {})(data);
