@@ -159,7 +159,7 @@
         '<div class="topbar-links"><a href="tel:' + CFG.phones[0].replace(/[^+\d]/g, '') + '">Call ' + esc(CFG.phones[0]) + '</a>' +
         '<a class="wa" href="' + waLink('Hello') + '" target="_blank" rel="noopener">WhatsApp +' + esc(CFG.whatsapp) + '</a></div></div></div>' +
         '<div class="site-header"><div class="container">' +
-        '<a class="logo" href="' + ROOT + 'index.html"><img src="' + ROOT + 'assets/images/logo.png" alt="ACE Training Lab home"></a>' +
+        '<a class="logo" href="' + ROOT + 'index.html"><img src="' + ROOT + 'assets/images/logo-gold.png" width="358" height="133" alt="ACE English Institute, home"></a>' +
         '<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>' +
         '<nav class="main-nav" aria-label="Main"><ul>' + items +
         '<li><a href="' + ROOT + 'register/index.html"' + (PAGE === 'register' ? ' class="active"' : '') + '>Register</a></li>' +
@@ -177,7 +177,7 @@
     if (footer) {
       footer.innerHTML =
         '<footer class="site-footer"><div class="container"><div class="footer-grid">' +
-        '<div><div class="footer-logo"><img src="' + ROOT + 'assets/images/logo.png" alt="ACE Training Lab"></div>' +
+        '<div><div class="footer-logo"><img src="' + ROOT + 'assets/images/logo-gold.png" width="358" height="133" loading="lazy" alt="ACE English Institute"></div>' +
         '<p>Quality education is the key to global opportunities and personal growth.</p></div>' +
         '<div><h3>Courses</h3>' + groupsOf(courses).map(function (g) {
           return '<a href="' + ROOT + 'courses/index.html#' + encodeURIComponent(g.name) + '">' + esc(g.name) + '</a>';

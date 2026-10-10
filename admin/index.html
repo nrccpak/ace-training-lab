@@ -15,7 +15,7 @@
     .admin { display: flex; flex-wrap: wrap; min-height: 100vh; }
     .side { flex: 1 1 220px; min-width: 0; background: var(--navy); color: var(--white); padding: 24px 20px; display: flex; flex-direction: column; gap: 6px; }
     .side .footer-logo { margin-bottom: 14px; }
-    .side .footer-logo img { width: 64px; height: 60px; object-fit: contain; }
+    .side .footer-logo img { width: 150px; height: auto; }
     .side button, .side a { font: inherit; font-weight: 600; text-align: left; color: var(--white); background: none; border: 0; padding: 12px 14px; border-radius: 8px; cursor: pointer; }
     .side button.on { background: var(--gold); color: var(--navy); font-weight: 700; }
     .side .label { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #D3DCEA; padding: 0 14px 6px; }
@@ -41,7 +41,7 @@
   <!-- LOGIN -->
   <div id="login" class="container">
     <form class="panel login" id="login-form">
-      <img src="../assets/images/logo.png" alt="ACE Training Lab" style="width:86px;height:80px;object-fit:contain">
+      <div style="background:var(--navy);border-radius:10px;padding:14px 18px;align-self:flex-start"><img src="../assets/images/logo-gold.png" alt="ACE English Institute" style="width:170px;height:auto"></div>
       <h1 style="font-size:28px">Admin sign in</h1>
       <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required></div>
       <div class="form-msg error" id="login-msg" role="alert"></div>
@@ -52,7 +52,7 @@
   <!-- ADMIN -->
   <div id="app" class="admin hidden">
     <nav class="side" aria-label="Admin">
-      <div class="footer-logo"><img src="../assets/images/logo.png" alt="ACE Training Lab"></div>
+      <div class="footer-logo"><img src="../assets/images/logo-gold.png" alt="ACE English Institute"></div>
       <div class="label">Admin</div>
       <button type="button" data-view="courses" class="on">Courses</button>
       <button type="button" data-view="batches">Batches</button>
