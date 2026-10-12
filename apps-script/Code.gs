@@ -441,7 +441,7 @@ function readRows(name) {
     var o = { _row: i + 2 };
     headers.forEach(function (h, c) { if (h) o[h] = r[c]; });
     return o;
-  }).filter(function (o) { return headers.some(function (h) { return h && o[h] !== '' && o[h] !== null; }); });
+  }).filter(function (o) { return headers.some(function (h) { return h && h !== 'show' && o[h] !== '' && o[h] !== null; }); });   // a row with only a show tick box is empty
 }
 
 function cleanCourse(c) {

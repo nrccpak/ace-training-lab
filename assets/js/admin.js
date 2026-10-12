@@ -70,6 +70,7 @@
       if (!res.ok) { return res; }
       var people = res.instructors;        // null: the Instructors tab is not made yet; missing: older backend
       data = res;
+      data.courses = (res.courses || []).filter(function (c) { return c.id || c.name; });   // skip empty sheet rows
       data.leads = res.leads || [];        // older backend versions do not send these
       data.results = res.results || [];
       data.settings = res.settings || {};
