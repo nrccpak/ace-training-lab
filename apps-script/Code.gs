@@ -2,7 +2,7 @@
  * ACE Training Lab — website backend (Google Apps Script)
  *
  * Lives inside the Google Sheet "ACE Training Lab - Website Data".
- *   GET  ?action=data            -> courses (shown only) and batches, for the public site
+ *   GET  ?action=data            -> courses, batches, results and instructors (shown only), for the public site
  *   POST {action:'register'}     -> saves a registration + payment proof, emails the owner and the student
  *   POST {action:'lead'}         -> saves a free demo class request, emails the owner
  *   POST {action:'admin...'}     -> admin page actions, all need the admin password
@@ -12,8 +12,10 @@
  *   NOTIFY_EMAIL     optional. Where registration emails go. Default: the sheet owner.
  */
 
-var TAB = { courses: 'Courses', batches: 'Batches', regs: 'Registrations', leads: 'Leads', results: 'Results', settings: 'Settings' };
+var TAB = { courses: 'Courses', batches: 'Batches', regs: 'Registrations', leads: 'Leads', results: 'Results', settings: 'Settings', instructors: 'Instructors' };
 var PROOF_FOLDER = 'ACE Registrations - Payment proofs';
+var PHOTO_FOLDER = 'ACE Website - Instructor photos';   // shared "anyone with the link can view", so the website can show them
+var MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 var MAX_PROOF_BYTES = 10 * 1024 * 1024;
 var DATA_CACHE_SECONDS = 300;        // public course data is cached this long (cleared on every admin change)
 var MAX_FORMS_PER_10_MIN = 40;       // protection against form spam
@@ -23,6 +25,7 @@ var SETTING_KEYS = ['whatsapp', 'phone1', 'phone2', 'phone3', 'email', 'address1
 var PRIVATE_SETTINGS = ['notifyEmail'];   // never sent to the public website
 var REG_FIELDS = ['course', 'courseName', 'batch', 'name', 'father', 'dob', 'gender', 'mobile', 'email', 'nationality', 'address'];
 var COURSE_FIELDS = ['id', 'name', 'group', 'short', 'level', 'duration', 'mode', 'fee', 'oldFee', 'image', 'instructor', 'learn', 'show'];
+var INSTRUCTOR_FIELDS = ['id', 'name', 'role', 'photo', 'bio', 'show'];
 
 /* ------------------------------------------------------------------ */
 /* Entry points                                                        */
@@ -38,6 +41,7 @@ function doGet(e) {
       courses: readRows(TAB.courses).filter(function (c) { return isTrue(c.show); }).map(cleanCourse),
       batches: readRows(TAB.batches).map(cleanBatch),
       results: readRows(TAB.results).filter(function (r) { return isTrue(r.show); }).map(cleanResult),
+      instructors: hasTab(TAB.instructors) ? readRows(TAB.instructors).filter(function (p) { return isTrue(p.show); }).map(cleanInstructor) : null,
       settings: publicSettings()
     });
     try { cache.put('public_data', out, DATA_CACHE_SECONDS); } catch (err) { /* too large to cache: still served */ }
@@ -192,6 +196,7 @@ function adminAction(body) {
           return o;
         }).reverse().slice(0, ADMIN_LIST_LIMIT),
         results: readRows(TAB.results).map(function (r) { var o = cleanResult(r); o.row = r._row; o.show = isTrue(r.show); return o; }),
+        instructors: hasTab(TAB.instructors) ? readRows(TAB.instructors).map(cleanInstructor) : null,
         settings: readSettings()
       };
 
@@ -204,6 +209,9 @@ function adminAction(body) {
     case 'adminSaveResult':   return saveResult(body.result || {});
     case 'adminDeleteResult': return deleteRow(TAB.results, body.row);
     case 'adminSaveSettings': return saveSettings(body.settings || {});
+    case 'adminSeedInstructors': return seedInstructors(body.instructors || []);
+    case 'adminSaveInstructor': return saveInstructor(body.instructor || {}, body.photoFile);
+    case 'adminDeleteInstructor': return deleteInstructor(text(body.id));
   }
   return { ok: false, error: 'Unknown action' };
 }
@@ -283,6 +291,83 @@ function saveResult(r) {
     else sh.appendRow(values);
     return { ok: true };
   } finally { lock.releaseLock(); }
+}
+
+/* ---------- instructors ---------- */
+
+/** Creates the Instructors tab, filled with the instructors the website already had. Does nothing if the tab exists. */
+function seedInstructors(list) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    if (hasTab(TAB.instructors)) return { ok: true };
+    var sh = SpreadsheetApp.getActive().insertSheet(TAB.instructors);
+    sh.getRange(1, 1, 1, INSTRUCTOR_FIELDS.length).setValues([INSTRUCTOR_FIELDS]).setFontWeight('bold');
+    var rows = list.slice(0, 50).filter(function (p) { return text(p.name); }).map(function (p) {
+      return [safeCell(p.id || slug(p.name)), safeCell(p.name), safeCell(p.role), safeCell(p.photo), safeCell(p.bio), true];
+    });
+    if (rows.length) sh.getRange(2, 1, rows.length, INSTRUCTOR_FIELDS.length).setValues(rows);
+    sh.setFrozenRows(1);
+    return { ok: true };
+  } finally { lock.releaseLock(); }
+}
+
+function saveInstructor(p, photoFile) {
+  if (!text(p.name)) return { ok: false, error: 'Instructor name is required' };
+  if (!hasTab(TAB.instructors)) seedInstructors([]);
+  if (photoFile && photoFile.data) {
+    var up = savePhoto(photoFile, p.name);
+    if (!up.ok) return up;
+    p.photo = up.url;
+  }
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var sh = sheet(TAB.instructors), rows = readRows(TAB.instructors), headers = headersOf(sh);
+    var existing = p.id ? rows.filter(function (r) { return r.id === p.id; })[0] : null;
+    if (!existing) {
+      var base = slug(p.name), id = base, n = 2;
+      while (rows.some(function (r) { return r.id === id; })) id = base + '-' + (n++);
+      p.id = id;
+    }
+    var values = headers.map(function (h) {
+      if (h === 'show') return p.show === undefined ? true : isTrue(p.show);
+      if (INSTRUCTOR_FIELDS.indexOf(h) < 0) return existing ? existing[h] : '';
+      return h === 'bio' ? safeCell(p[h]).slice(0, 1500) : safeCell(p[h]);
+    });
+    if (existing) sh.getRange(existing._row, 1, 1, headers.length).setValues([values]);
+    else sh.appendRow(values);
+    return { ok: true, id: p.id };
+  } finally { lock.releaseLock(); }
+}
+
+function deleteInstructor(id) {
+  if (!id || !hasTab(TAB.instructors)) return { ok: false, error: 'Instructor not found' };
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var person = readRows(TAB.instructors).filter(function (r) { return r.id === id; })[0];
+    if (!person) return { ok: false, error: 'Instructor not found' };
+    sheet(TAB.instructors).deleteRow(person._row);
+    // courses taught by this instructor are left with no instructor
+    var cs = sheet(TAB.courses), col = headersOf(cs).indexOf('instructor') + 1;
+    if (col > 0) readRows(TAB.courses).forEach(function (c) { if (c.instructor === id) cs.getRange(c._row, col).setValue(''); });
+    return { ok: true };
+  } finally { lock.releaseLock(); }
+}
+
+/** Saves an uploaded photo to Drive, viewable by anyone with the link, and returns a link the website can show. */
+function savePhoto(f, name) {
+  var type = String(f.type || '');
+  if (!/^image\/(jpeg|png|webp)$/.test(type)) return { ok: false, error: 'Photo must be a JPG, PNG or WEBP image' };
+  var bytes = Utilities.base64Decode(f.data);
+  if (bytes.length > MAX_PHOTO_BYTES) return { ok: false, error: 'Photo is too large' };
+  var found = DriveApp.getFoldersByName(PHOTO_FOLDER);
+  var folder = found.hasNext() ? found.next() : DriveApp.createFolder(PHOTO_FOLDER);
+  var file = folder.createFile(Utilities.newBlob(bytes, type, slug(name) + '-' + stamp('yyyyMMdd-HHmmss') + '.' + type.split('/')[1]));
+  try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); }
+  catch (err) { return { ok: false, error: 'The photo was saved but could not be shared publicly: ' + err.message }; }
+  return { ok: true, url: 'https://lh3.googleusercontent.com/d/' + file.getId() + '=w400' };
 }
 
 function setStatus(tab, row, status, allowed) {
@@ -400,6 +485,12 @@ function notifyEmail() {
   var s = readSettings().notifyEmail;
   return (s && /@/.test(s)) ? s : (prop('NOTIFY_EMAIL') || Session.getEffectiveUser().getEmail());
 }
+
+function cleanInstructor(p) {
+  return { id: String(p.id || ''), name: String(p.name || ''), role: String(p.role || ''), photo: String(p.photo || ''), bio: String(p.bio || ''), show: isTrue(p.show) };
+}
+
+function hasTab(name) { return !!SpreadsheetApp.getActive().getSheetByName(name); }
 
 function cleanResult(r) {
   return { name: String(r.name || ''), course: String(r.course || ''), score: String(r.score || ''), quote: String(r.quote || '') };

@@ -6,14 +6,16 @@
   'use strict';
 
   var API = window.ACE_CONFIG.API_URL;
-  var PEOPLE = window.ACE_INSTRUCTORS || {};
+  var BUILT_IN = window.ACE_INSTRUCTORS || {};   // the instructors the website had before the Instructors tab existed
+  var seeding = false;
   var STATUSES = ['New', 'Payment checked', 'Confirmed', 'Cancelled'];
   var KEY = 'ace_admin_pw';
   var password = '';
   var LEAD_STATUSES = ['New', 'Contacted', 'Demo done', 'Joined', 'Not interested'];
   var SETTING_KEYS = ['whatsapp', 'phone1', 'phone2', 'phone3', 'email', 'notifyEmail', 'address1', 'address2', 'hours', 'topbar', 'accounts'];
   var settingsLoaded = false;
-  var data = { courses: [], batches: [], registrations: [], leads: [], results: [], settings: {} };
+  var data = { courses: [], batches: [], registrations: [], leads: [], results: [], instructors: [], settings: {} };
+  var photoFile = null;        // new photo chosen in the instructor form, already made smaller
   var confirmId = null;        // which Delete button is waiting for "Yes"
 
   function $(id) { return document.getElementById(id); }
@@ -36,6 +38,13 @@
     if (kind === 'info') setTimeout(function () { if (m.textContent === text) m.className = 'form-msg'; }, 4000);
   }
   function siteChanged() { try { localStorage.removeItem('ace_data_v2'); } catch (e) { /* storage blocked */ } }
+  function imgSrc(file) {
+    if (!file) return '';
+    return /^https?:\/\//.test(file) ? file : '../assets/images/' + file;
+  }
+  function builtInList() {
+    return Object.keys(BUILT_IN).map(function (k) { var p = BUILT_IN[k]; return { id: k, name: p.name, role: p.role, photo: p.photo, bio: p.bio, show: true }; });
+  }
   function courseName(id) {
     var c = data.courses.filter(function (x) { return x.id === id; })[0];
     return c ? c.name : id;
@@ -49,10 +58,18 @@
   function load() {
     return call('adminData').then(function (res) {
       if (!res.ok) { return res; }
+      var people = res.instructors;        // null: the Instructors tab is not made yet; missing: older backend
       data = res;
       data.leads = res.leads || [];        // older backend versions do not send these
       data.results = res.results || [];
       data.settings = res.settings || {};
+      data.instructorsReady = Array.isArray(people);
+      data.instructors = data.instructorsReady ? people : builtInList();
+      if (people === null && !seeding) {
+        // first time: copy the instructors already on the website into a new Instructors tab
+        seeding = true;
+        return call('adminSeedInstructors', { instructors: builtInList() }).then(function () { return load(); });
+      }
       renderAll();
       if (!settingsLoaded) { fillSettings(); settingsLoaded = true; }   // do not overwrite what is being typed
       return res;
@@ -88,7 +105,7 @@
   document.querySelectorAll('.side [data-view]').forEach(function (btn) {
     btn.addEventListener('click', function () {
       document.querySelectorAll('.side [data-view]').forEach(function (b) { b.classList.toggle('on', b === btn); });
-      ['courses', 'batches', 'leads', 'regs', 'results', 'settings'].forEach(function (v) { $('view-' + v).classList.toggle('hidden', v !== btn.getAttribute('data-view')); });
+      ['courses', 'batches', 'leads', 'regs', 'instructors', 'results', 'settings'].forEach(function (v) { $('view-' + v).classList.toggle('hidden', v !== btn.getAttribute('data-view')); });
       $('msg').className = 'form-msg';
     });
   });
@@ -112,9 +129,11 @@
     var groups = {};
     data.courses.forEach(function (c) { if (c.group) groups[c.group] = 1; });
     $('groups').innerHTML = Object.keys(groups).map(function (g) { return '<option value="' + esc(g) + '">'; }).join('');
-    $('c-instructor').innerHTML = '<option value="">None</option>' + Object.keys(PEOPLE).map(function (k) {
-      return '<option value="' + esc(k) + '">' + esc(PEOPLE[k].name) + '</option>';
+    var keep = $('c-instructor').value;
+    $('c-instructor').innerHTML = '<option value="">None</option>' + data.instructors.map(function (p) {
+      return '<option value="' + esc(p.id) + '">' + esc(p.name) + (p.show ? '' : ' (hidden)') + '</option>';
     }).join('');
+    $('c-instructor').value = keep;
 
     /* batches */
     $('b-course').innerHTML = '<option value="">Select a course</option>' + data.courses.map(function (c) {
@@ -152,7 +171,22 @@
         '<td><button class="pill' + (r.show ? ' on' : '') + '" data-act="result-toggle" data-row="' + esc(r.row) + '" aria-pressed="' + (r.show ? 'true' : 'false') + '">' + (r.show ? 'Showing' : 'Hidden') + '</button></td>' +
         '<td class="actions">' + deleteButtons('r:' + r.row) + '</td></tr>';
     }).join('') : '<tr><td colspan="5" class="empty">No results yet.</td></tr>';
+
+    /* instructors */
+    var old = res_old();
+    $('instructor-note').className = old ? 'form-msg show error' : 'form-msg';
+    $('instructor-note').textContent = old ? 'The Google Apps Script needs updating before instructors can be changed here. The list below is what the website shows now.' : '';
+    $('add-instructor').disabled = old;
+    $('instructor-rows').innerHTML = data.instructors.length ? data.instructors.map(function (p) {
+      var teaches = data.courses.filter(function (c) { return c.instructor === p.id; }).map(function (c) { return esc(c.name); }).join(', ');
+      var photo = p.photo ? '<img src="' + esc(imgSrc(p.photo)) + '" alt="">' : '<img alt="">';
+      return '<tr><td><div class="person">' + photo + '<span class="strong">' + esc(p.name) + '</span></div></td><td>' + esc(p.role) + '</td>' +
+        '<td>' + (teaches || '<span class="muted">none</span>') + '</td>' +
+        '<td><button class="pill' + (p.show ? ' on' : '') + '" data-act="instructor-toggle" data-id="' + esc(p.id) + '" aria-pressed="' + (p.show ? 'true' : 'false') + '"' + (old ? ' disabled' : '') + '>' + (p.show ? 'Showing' : 'Hidden') + '</button></td>' +
+        '<td class="actions">' + (old ? '' : '<button class="btn btn-small btn-line" data-act="instructor-edit" data-id="' + esc(p.id) + '">Edit</button>' + deleteButtons('i:' + p.id)) + '</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="empty">No instructors yet. Click "Add instructor".</td></tr>';
   }
+  function res_old() { return !data.instructorsReady; }
 
   /* ---------- course form ---------- */
   var FIELDS = ['id', 'name', 'group', 'fee', 'oldFee', 'level', 'duration', 'mode', 'instructor', 'short', 'learn', 'image'];
@@ -200,7 +234,16 @@
       b.disabled = true;
       if (id.indexOf('c:') === 0) save('adminDeleteCourse', { id: id.slice(2) }, 'Course deleted.');
       else if (id.indexOf('r:') === 0) save('adminDeleteResult', { row: Number(id.slice(2)) }, 'Result deleted.');
+      else if (id.indexOf('i:') === 0) save('adminDeleteInstructor', { id: id.slice(2) }, 'Instructor deleted.');
       else save('adminDeleteBatch', { row: Number(id.slice(2)) }, 'Batch deleted.');
+    }
+    if (act === 'instructor-edit') openInstructor(findInstructor(id));
+    if (act === 'instructor-toggle') {
+      var p0 = findInstructor(id), copy2 = {};
+      Object.keys(p0).forEach(function (k) { copy2[k] = p0[k]; });
+      copy2.show = !p0.show;
+      b.disabled = true;
+      save('adminSaveInstructor', { instructor: copy2 }, copy2.show ? 'Instructor is now showing on the website.' : 'Instructor is now hidden from the website.');
     }
     if (act === 'refresh') load().then(function (r) { note(r.ok ? 'info' : 'error', r.ok ? 'Updated.' : r.error); });
     if (act === 'result-toggle') {
@@ -241,6 +284,55 @@
     out.whatsapp = out.whatsapp.replace(/[^0-9]/g, '');
     if (out.whatsapp.length < 8) { note('error', 'The WhatsApp number looks too short. Include the country code, for example 923418905188.'); return; }
     save('adminSaveSettings', { settings: out }, 'Settings saved.').then(function (ok) { if (ok) $('t-whatsapp').value = out.whatsapp; });
+  });
+
+  /* ---------- instructor form ---------- */
+  var BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
+  function findInstructor(id) { return data.instructors.filter(function (p) { return p.id === id; })[0]; }
+  function openInstructor(p) {
+    $('instructor-form-title').textContent = p ? 'Edit instructor' : 'Add an instructor';
+    ['id', 'name', 'role', 'bio', 'photo'].forEach(function (k) { $('i-' + k).value = p ? (p[k] || '') : ''; });
+    $('instructor-form').dataset.show = p ? String(p.show) : 'true';
+    $('i-preview').src = (p && p.photo) ? imgSrc(p.photo) : BLANK;
+    $('i-file').value = ''; photoFile = null;
+    $('instructor-form').classList.remove('hidden');
+    $('i-name').focus();
+  }
+  $('add-instructor').addEventListener('click', function () { openInstructor(null); });
+  $('instructor-cancel').addEventListener('click', function () { $('instructor-form').classList.add('hidden'); });
+  $('i-photo-clear').addEventListener('click', function () {
+    $('i-photo').value = ''; $('i-file').value = ''; photoFile = null; $('i-preview').src = BLANK;
+  });
+  /* Makes the chosen photo a small square JPG (400 x 400) before sending, so it loads fast on the website. */
+  $('i-file').addEventListener('change', function () {
+    var f = this.files[0];
+    photoFile = null;
+    if (!f) return;
+    if (!/^image\//.test(f.type)) { note('error', 'Please choose a photo (JPG or PNG).'); this.value = ''; return; }
+    var url = URL.createObjectURL(f), pic = new Image();
+    pic.onload = function () {
+      var side = Math.min(pic.width, pic.height), size = Math.min(400, side);
+      var canvas = document.createElement('canvas');
+      canvas.width = canvas.height = size;
+      canvas.getContext('2d').drawImage(pic, (pic.width - side) / 2, (pic.height - side) / 2, side, side, 0, 0, size, size);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      URL.revokeObjectURL(url);
+      $('i-preview').src = dataUrl;
+      photoFile = { type: 'image/jpeg', data: dataUrl.split(',')[1] };
+    };
+    pic.onerror = function () { URL.revokeObjectURL(url); note('error', 'That photo could not be opened. Please try another file.'); };
+    pic.src = url;
+  });
+  $('instructor-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var p = { show: $('instructor-form').dataset.show !== 'false' };
+    ['id', 'name', 'role', 'bio', 'photo'].forEach(function (k) { p[k] = $('i-' + k).value.trim(); });
+    var btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    save('adminSaveInstructor', { instructor: p, photoFile: photoFile }, 'Instructor saved.').then(function (ok) {
+      btn.disabled = false; btn.textContent = 'Save instructor';
+      if (ok) { $('instructor-form').classList.add('hidden'); photoFile = null; }
+    });
   });
 
   /* ---------- result form ---------- */

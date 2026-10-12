@@ -67,7 +67,8 @@ window.ACE_DATA = {
   batches: []
 };
 
-/* Instructors (shown on the About page and on course pages). */
+/* Built-in instructors. Used only until the Instructors tab exists in the Google Sheet
+   (the admin page copies these into it the first time it opens), or if the sheet cannot be reached. */
 window.ACE_INSTRUCTORS = {
   aneeqa: { name: 'Ms. Aneeqa Sultana', role: 'IELTS', photo: 'instructor-aneeqa.jpg', bio: 'Over 8 years of experience and multiple British Council certifications. Has helped 500+ students reach their IELTS scores.' },
   nouman: { name: 'Dr. Nouman Tariq', role: 'OET', photo: 'instructor-nouman.jpg', bio: 'MBBS doctor who has cleared USMLE and trained 700+ students for OET.' },

@@ -13,6 +13,7 @@
     'Quran': { image: 'course-quran.jpg', who: 'For children and adults, anywhere in the world', text: 'One-to-one attention for every student: recitation, Tajweed and Tafsir, at a time that suits your family.' }
   };
   var STATIC_IDS = ((window.ACE_DATA || {}).courses || []).map(function (c) { return c.id; });   // courses that have their own page file
+  var PEOPLE = window.ACE_INSTRUCTORS || {};   // replaced by the Instructors tab of the Google Sheet once it loads
   var CACHE_KEY = 'ace_data_v2';
   var CACHE_MINUTES = 10;
 
@@ -205,7 +206,7 @@
 
   /* ---------- shared pieces ---------- */
   function instructorTile(key) {
-    var p = (window.ACE_INSTRUCTORS || {})[key];
+    var p = PEOPLE[key];
     if (!p) return '';
     return '<div class="tile"><img class="photo" loading="lazy" width="84" height="84" src="' + img(p.photo) + '" alt="' + esc(p.name) + '">' +
       '<div class="eyebrow">' + esc(p.role) + '</div><h3>' + esc(p.name) + '</h3><p>' + esc(p.bio) + '</p></div>';
@@ -247,7 +248,7 @@
     });
     var people = $('instructors');
     if (people) {
-      var all = Object.keys(window.ACE_INSTRUCTORS || {});
+      var all = Object.keys(PEOPLE);
       var teaching = all.filter(function (k) { return data.courses.some(function (c) { return c.instructor === k; }); });
       people.innerHTML = (teaching.length ? teaching : all).map(instructorTile).join('');
     }
@@ -322,7 +323,7 @@
 
   function pageAbout() {
     var people = $('instructors');
-    if (people) people.innerHTML = Object.keys(window.ACE_INSTRUCTORS || {}).map(instructorTile).join('');
+    if (people) people.innerHTML = Object.keys(PEOPLE).map(instructorTile).join('');
   }
 
   function pageContact() {
@@ -449,6 +450,10 @@
   })();
   loadData().then(function (data) {
     applySettings(data.settings);
+    if (Array.isArray(data.instructors)) {
+      PEOPLE = {};
+      data.instructors.forEach(function (p) { if (p.id && p.name) PEOPLE[p.id] = p; });
+    }
     data = { courses: (data.courses || []).filter(isShown), batches: data.batches || [], results: data.results || [] };
     renderLayout(data.courses);
     ({ home: pageHome, hub: pageHub, course: pageCourse, about: pageAbout, contact: pageContact, register: pageRegister, demo: pageDemo, results: pageResults }[PAGE] || function () {})(data);
