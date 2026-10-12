@@ -247,11 +247,7 @@
       el.hidden = shown.indexOf(el.getAttribute('data-course')) < 0;
     });
     var people = $('instructors');
-    if (people) {
-      var all = Object.keys(PEOPLE);
-      var teaching = all.filter(function (k) { return data.courses.some(function (c) { return c.instructor === k; }); });
-      people.innerHTML = (teaching.length ? teaching : all).map(instructorTile).join('');
-    }
+    if (people) people.innerHTML = Object.keys(PEOPLE).map(instructorTile).join('');   // every instructor set to Showing
     renderResults(data, 3);
   }
 
@@ -298,7 +294,8 @@
         }).join('') + '</tbody></table></div>'
       : '<div class="box"><p>New batch dates are shared on WhatsApp. Message us and we will send you the next start date.</p>' +
         '<div><a class="btn btn-navy" target="_blank" rel="noopener" href="' + waLink('Hello, when is the next batch for ' + c.name + '?') + '">Ask for the next batch</a></div></div>';
-    var teacher = instructorTile(c.instructor);
+    var ids = String(c.instructor || '').split(',').map(function (x) { return x.trim(); }).filter(function (k) { return PEOPLE[k]; });
+    var teacher = ids.map(instructorTile).join('');
 
     box.innerHTML =
       '<section class="page-hero"><div class="container">' +
@@ -314,7 +311,7 @@
       '</div></div></section>' +
       (learn ? '<section class="section"><div class="container"><div class="section-head"><h2>What you will learn</h2></div><div class="grid">' + learn + '</div></div></section>' : '') +
       '<section class="section section-soft"><div class="container"><div class="section-head"><h2>Upcoming batches</h2></div>' + batchHtml + '</div></section>' +
-      (teacher ? '<section class="section"><div class="container"><div class="section-head"><h2>Your instructor</h2></div><div class="grid" style="max-width:520px">' + teacher + '</div></div></section>' : '') +
+      (teacher ? '<section class="section"><div class="container"><div class="section-head"><h2>' + (ids.length > 1 ? 'Your instructors' : 'Your instructor') + '</h2></div><div class="grid"' + (ids.length > 1 ? '' : ' style="max-width:520px"') + '>' + teacher + '</div></div></section>' : '') +
       '<section class="section-blue"><div class="container split"><h2 class="grow">Ready to start ' + esc(c.name) + '?</h2>' +
       '<div class="btn-row"><a class="btn btn-gold" href="' + demoUrl(c) + '">Book a free demo class</a>' +
       '<a class="btn btn-line-white" href="' + registerUrl(c) + '">Register now</a>' +

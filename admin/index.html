@@ -32,6 +32,12 @@
     .login { max-width: 420px; margin: 12vh auto; }
     .empty { padding: 28px 20px; color: var(--muted); }
     .hidden { display: none !important; }
+    .checks-field { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .checks-field legend { font-family: inherit; font-size: 15px; font-weight: 600; color: inherit; margin-bottom: 8px; padding: 0; }
+    .checks { display: flex; flex-wrap: wrap; gap: 10px; }
+    .checks label { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px; border: 1px solid var(--field); border-radius: 8px; background: var(--white); cursor: pointer; font-weight: 500; }
+    .checks input { width: 18px; height: 18px; margin: 0; accent-color: var(--navy); }
+    .checks .muted { padding: 10px 0; }
     .person { display: flex; align-items: center; gap: 14px; }
     .person img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; background: var(--soft); flex: none; }
     .photo-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
@@ -94,8 +100,9 @@
             <div class="field"><label for="c-level">Level</label><input id="c-level"></div>
             <div class="field"><label for="c-duration">Duration</label><input id="c-duration"></div>
             <div class="field"><label for="c-mode">Mode</label><input id="c-mode"></div>
-            <div class="field"><label for="c-instructor">Instructor</label><select id="c-instructor"></select></div>
           </div>
+          <fieldset class="field checks-field"><legend>Instructors (tick one or more)</legend><div class="checks" id="c-instructors"></div></fieldset>
+          <input type="hidden" id="c-instructor">
           <div class="field"><label for="c-short">Short description (shown on cards)</label><input id="c-short"></div>
           <div class="field"><label for="c-learn">What students learn. One point per line, written as "Title: text"</label><textarea id="c-learn" rows="5"></textarea></div>
           <div class="field"><label for="c-image">Image: a file name from assets/images, or a full image link</label><input id="c-image" placeholder="course-english.jpg"></div>
@@ -164,6 +171,7 @@
             <div class="field"><label for="i-name">Name</label><input id="i-name" required placeholder="Ms. Aneeqa Sultana"></div>
             <div class="field"><label for="i-role">Teaches</label><input id="i-role" required placeholder="IELTS"></div>
           </div>
+          <fieldset class="field checks-field"><legend>Courses this instructor teaches (tick one or more)</legend><div class="checks" id="i-courses"></div></fieldset>
           <div class="field"><label for="i-bio">Short profile (2 or 3 sentences)</label><textarea id="i-bio" rows="4" maxlength="1500"></textarea></div>
           <div class="field">
             <label for="i-file">Photo (JPG or PNG; a square face photo looks best)</label>

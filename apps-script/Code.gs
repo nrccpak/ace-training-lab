@@ -337,6 +337,7 @@ function saveInstructor(p, photoFile) {
     });
     if (existing) sh.getRange(existing._row, 1, 1, headers.length).setValues([values]);
     else sh.appendRow(values);
+    if (Array.isArray(p.courses)) linkCourses(p.id, p.courses.map(String));
     return { ok: true, id: p.id };
   } finally { lock.releaseLock(); }
 }
@@ -349,11 +350,24 @@ function deleteInstructor(id) {
     var person = readRows(TAB.instructors).filter(function (r) { return r.id === id; })[0];
     if (!person) return { ok: false, error: 'Instructor not found' };
     sheet(TAB.instructors).deleteRow(person._row);
-    // courses taught by this instructor are left with no instructor
-    var cs = sheet(TAB.courses), col = headersOf(cs).indexOf('instructor') + 1;
-    if (col > 0) readRows(TAB.courses).forEach(function (c) { if (c.instructor === id) cs.getRange(c._row, col).setValue(''); });
+    linkCourses(id, []);   // take this instructor off every course
     return { ok: true };
   } finally { lock.releaseLock(); }
+}
+
+/** A course's "instructor" cell holds one or more instructor ids, separated by commas. */
+function idList(v) { return String(v == null ? '' : v).split(',').map(function (x) { return x.trim(); }).filter(Boolean); }
+
+/** Makes the instructor teach exactly the given courses: adds their id to those courses and removes it from all others. */
+function linkCourses(id, courseIds) {
+  var cs = sheet(TAB.courses), col = headersOf(cs).indexOf('instructor') + 1;
+  if (col < 1) return;
+  readRows(TAB.courses).forEach(function (c) {
+    var list = idList(c.instructor), has = list.indexOf(id) >= 0, want = courseIds.indexOf(String(c.id)) >= 0;
+    if (has === want) return;
+    list = want ? list.concat([id]) : list.filter(function (x) { return x !== id; });
+    cs.getRange(c._row, col).setValue(list.join(','));
+  });
 }
 
 /** Saves an uploaded photo to Drive, viewable by anyone with the link, and returns a link the website can show. */

@@ -45,6 +45,16 @@
   function builtInList() {
     return Object.keys(BUILT_IN).map(function (k) { var p = BUILT_IN[k]; return { id: k, name: p.name, role: p.role, photo: p.photo, bio: p.bio, show: true }; });
   }
+  /** A course's instructor field holds one or more instructor ids separated by commas. */
+  function idList(v) { return String(v == null ? '' : v).split(',').map(function (x) { return x.trim(); }).filter(Boolean); }
+  function checkboxes(box, items, ticked) {
+    $(box).innerHTML = items.length ? items.map(function (it) {
+      return '<label><input type="checkbox" value="' + esc(it.id) + '"' + (ticked.indexOf(it.id) >= 0 ? ' checked' : '') + '>' + esc(it.label) + '</label>';
+    }).join('') : '<span class="muted">None yet.</span>';
+  }
+  function ticked(box) {
+    return Array.prototype.map.call($(box).querySelectorAll('input:checked'), function (i) { return i.value; });
+  }
   function courseName(id) {
     var c = data.courses.filter(function (x) { return x.id === id; })[0];
     return c ? c.name : id;
@@ -129,11 +139,6 @@
     var groups = {};
     data.courses.forEach(function (c) { if (c.group) groups[c.group] = 1; });
     $('groups').innerHTML = Object.keys(groups).map(function (g) { return '<option value="' + esc(g) + '">'; }).join('');
-    var keep = $('c-instructor').value;
-    $('c-instructor').innerHTML = '<option value="">None</option>' + data.instructors.map(function (p) {
-      return '<option value="' + esc(p.id) + '">' + esc(p.name) + (p.show ? '' : ' (hidden)') + '</option>';
-    }).join('');
-    $('c-instructor').value = keep;
 
     /* batches */
     $('b-course').innerHTML = '<option value="">Select a course</option>' + data.courses.map(function (c) {
@@ -178,7 +183,7 @@
     $('instructor-note').textContent = old ? 'The Google Apps Script needs updating before instructors can be changed here. The list below is what the website shows now.' : '';
     $('add-instructor').disabled = old;
     $('instructor-rows').innerHTML = data.instructors.length ? data.instructors.map(function (p) {
-      var teaches = data.courses.filter(function (c) { return c.instructor === p.id; }).map(function (c) { return esc(c.name); }).join(', ');
+      var teaches = data.courses.filter(function (c) { return idList(c.instructor).indexOf(p.id) >= 0; }).map(function (c) { return esc(c.name); }).join(', ');
       var photo = p.photo ? '<img src="' + esc(imgSrc(p.photo)) + '" alt="">' : '<img alt="">';
       return '<tr><td><div class="person">' + photo + '<span class="strong">' + esc(p.name) + '</span></div></td><td>' + esc(p.role) + '</td>' +
         '<td>' + (teaches || '<span class="muted">none</span>') + '</td>' +
@@ -194,6 +199,7 @@
     $('course-form-title').textContent = c ? 'Edit course' : 'Add a course';
     FIELDS.forEach(function (k) { $('c-' + k).value = c ? (c[k] || '') : ''; });
     $('course-form').dataset.show = c ? String(c.show) : 'true';
+    checkboxes('c-instructors', data.instructors.map(function (p) { return { id: p.id, label: p.name + (p.show ? '' : ' (hidden)') }; }), idList(c ? c.instructor : ''));
     $('course-form').classList.remove('hidden');
     $('c-name').focus();
   }
@@ -203,6 +209,7 @@
     e.preventDefault();
     var c = { show: $('course-form').dataset.show !== 'false' };
     FIELDS.forEach(function (k) { c[k] = $('c-' + k).value.trim(); });
+    c.instructor = ticked('c-instructors').join(',');
     save('adminSaveCourse', { course: c }, 'Course saved.').then(function (ok) { if (ok) $('course-form').classList.add('hidden'); });
   });
 
@@ -293,6 +300,8 @@
     $('instructor-form-title').textContent = p ? 'Edit instructor' : 'Add an instructor';
     ['id', 'name', 'role', 'bio', 'photo'].forEach(function (k) { $('i-' + k).value = p ? (p[k] || '') : ''; });
     $('instructor-form').dataset.show = p ? String(p.show) : 'true';
+    checkboxes('i-courses', data.courses.map(function (c) { return { id: c.id, label: c.name + (c.show ? '' : ' (hidden)') }; }),
+      p ? data.courses.filter(function (c) { return idList(c.instructor).indexOf(p.id) >= 0; }).map(function (c) { return c.id; }) : []);
     $('i-preview').src = (p && p.photo) ? imgSrc(p.photo) : BLANK;
     $('i-file').value = ''; photoFile = null;
     $('instructor-form').classList.remove('hidden');
@@ -327,6 +336,7 @@
     e.preventDefault();
     var p = { show: $('instructor-form').dataset.show !== 'false' };
     ['id', 'name', 'role', 'bio', 'photo'].forEach(function (k) { p[k] = $('i-' + k).value.trim(); });
+    p.courses = ticked('i-courses');
     var btn = e.target.querySelector('button[type=submit]');
     btn.disabled = true; btn.textContent = 'Saving…';
     save('adminSaveInstructor', { instructor: p, photoFile: photoFile }, 'Instructor saved.').then(function (ok) {
