@@ -32,10 +32,10 @@
     return 'https://api.whatsapp.com/send/?phone=' + CFG.whatsapp + (text ? '&text=' + encodeURIComponent(text) : '');
   }
   function courseUrl(c) {
-    if (STATIC_IDS.indexOf(c.id) >= 0) return ROOT + 'courses/' + c.id + '.html';
-    return ROOT + 'courses/course.html?id=' + encodeURIComponent(c.id);
+    if (STATIC_IDS.indexOf(c.id) >= 0) return ROOT + 'courses/' + c.id;
+    return ROOT + 'courses/course?id=' + encodeURIComponent(c.id);
   }
-  function demoUrl(c) { return ROOT + 'pages/demo.html' + (c ? '?course=' + encodeURIComponent(c.id) : ''); }
+  function demoUrl(c) { return ROOT + 'pages/demo' + (c ? '?course=' + encodeURIComponent(c.id) : ''); }
   /** Sends an event to Google Analytics and the Meta pixel, if they are switched on in config.js. */
   function track(name, detail) {
     try { if (window.gtag) window.gtag('event', name, detail || {}); } catch (e) { /* ignore */ }
@@ -63,7 +63,7 @@
       .then(function (r) { return r.json(); });
   }
   function registerUrl(c, batch) {
-    var u = ROOT + 'register/index.html';
+    var u = ROOT + 'register/';
     if (c) u += '?course=' + encodeURIComponent(c.id) + (batch ? '&batch=' + encodeURIComponent(batch) : '');
     return u;
   }
@@ -132,12 +132,12 @@
   /* ---------- header and footer ---------- */
   function renderLayout(courses) {
     var nav = [
-      ['home', 'Home', 'index.html'],
-      ['courses', 'Courses', 'courses/index.html'],
-      ['about', 'About', 'pages/about.html'],
-      ['results', 'Results', 'pages/results.html'],
-      ['faqs', 'FAQs', 'pages/faqs.html'],
-      ['contact', 'Contact', 'pages/contact.html']
+      ['home', 'Home', ''],
+      ['courses', 'Courses', 'courses/'],
+      ['about', 'About', 'pages/about'],
+      ['results', 'Results', 'pages/results'],
+      ['faqs', 'FAQs', 'pages/faqs'],
+      ['contact', 'Contact', 'pages/contact']
     ];
     var section = { hub: 'courses', course: 'courses' }[PAGE] || PAGE;
     var drop = groupsOf(courses).map(function (g) {
@@ -147,8 +147,8 @@
     }).join('');
     var items = nav.map(function (n) {
       var cls = n[0] === section ? ' class="active"' : '';
-      if (n[0] !== 'courses') return '<li><a href="' + ROOT + n[2] + '"' + cls + '>' + n[1] + '</a></li>';
-      return '<li class="has-drop"><a href="' + ROOT + n[2] + '"' + cls + '>Courses</a>' +
+      if (n[0] !== 'courses') return '<li><a href="' + (ROOT + n[2] || './') + '"' + cls + '>' + n[1] + '</a></li>';
+      return '<li class="has-drop"><a href="' + (ROOT + n[2] || './') + '"' + cls + '>Courses</a>' +
         '<div class="dropdown">' + drop + '</div></li>';
     }).join('');
 
@@ -160,11 +160,11 @@
         '<div class="topbar-links"><a href="tel:' + CFG.phones[0].replace(/[^+\d]/g, '') + '">Call ' + esc(CFG.phones[0]) + '</a>' +
         '<a class="wa" href="' + waLink('Hello') + '" target="_blank" rel="noopener">WhatsApp +' + esc(CFG.whatsapp) + '</a></div></div></div>' +
         '<div class="site-header"><div class="container">' +
-        '<a class="logo" href="' + ROOT + 'index.html"><img src="' + ROOT + 'assets/images/logo-gold.png" width="358" height="133" alt="ACE English Institute, home"></a>' +
+        '<a class="logo" href="' + (ROOT || './') + '"><img src="' + ROOT + 'assets/images/logo-gold.png" width="358" height="133" alt="ACE English Institute, home"></a>' +
         '<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>' +
         '<nav class="main-nav" aria-label="Main"><ul>' + items +
-        '<li><a href="' + ROOT + 'register/index.html"' + (PAGE === 'register' ? ' class="active"' : '') + '>Register</a></li>' +
-        '<li><a class="btn btn-gold" href="' + ROOT + 'pages/demo.html">Free demo class</a></li></ul></nav>' +
+        '<li><a href="' + ROOT + 'register/"' + (PAGE === 'register' ? ' class="active"' : '') + '>Register</a></li>' +
+        '<li><a class="btn btn-gold" href="' + ROOT + 'pages/demo">Free demo class</a></li></ul></nav>' +
         '</div></div>';
       var toggle = header.querySelector('.nav-toggle');
       var menu = header.querySelector('.main-nav');
@@ -181,19 +181,19 @@
         '<div><div class="footer-logo"><img src="' + ROOT + 'assets/images/logo-gold.png" width="358" height="133" loading="lazy" alt="ACE English Institute"></div>' +
         '<p>Quality education is the key to global opportunities and personal growth.</p></div>' +
         '<div><h3>Courses</h3>' + groupsOf(courses).map(function (g) {
-          return '<a href="' + ROOT + 'courses/index.html#' + encodeURIComponent(g.name) + '">' + esc(g.name) + '</a>';
-        }).join('') + '<a class="gold" href="' + ROOT + 'pages/demo.html">Free demo class</a><a href="' + ROOT + 'register/index.html">Register</a></div>' +
+          return '<a href="' + ROOT + 'courses/#' + encodeURIComponent(g.name) + '">' + esc(g.name) + '</a>';
+        }).join('') + '<a class="gold" href="' + ROOT + 'pages/demo">Free demo class</a><a href="' + ROOT + 'register/">Register</a></div>' +
         '<div><h3>Contact</h3>' + CFG.phones.map(function (p) {
           return '<a href="tel:' + p.replace(/[^+\d]/g, '') + '">' + esc(p) + '</a>';
         }).join('') + '<a href="mailto:' + esc(CFG.email) + '">' + esc(CFG.email) + '</a></div>' +
         '<div><h3>Offices</h3>' + CFG.addresses.map(function (a) { return '<p>' + esc(a) + '</p>'; }).join('') +
         '<p>' + esc(CFG.hours) + '</p></div>' +
         '</div><div class="footer-bottom"><span>&copy; ' + new Date().getFullYear() + ' ACE Training Lab</span>' +
-        '<div><a href="' + ROOT + 'pages/privacy.html">Privacy Policy</a><a href="' + ROOT + 'pages/terms.html">Terms &amp; Conditions</a><a href="' + ROOT + 'admin/index.html">Admin</a></div>' +
+        '<div><a href="' + ROOT + 'pages/privacy">Privacy Policy</a><a href="' + ROOT + 'pages/terms">Terms &amp; Conditions</a><a href="' + ROOT + 'admin/">Admin</a></div>' +
         '</div></div></footer>' +
         '<a class="wa-float" href="' + waLink('Hello') + '" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20l1.2-5.1A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' +
         (PAGE === 'demo' || PAGE === 'register' || PAGE === 'thanks' ? '' :
-          '<div class="mobile-bar"><a class="btn btn-gold" href="' + ROOT + 'pages/demo.html">Free demo class</a>' +
+          '<div class="mobile-bar"><a class="btn btn-gold" href="' + ROOT + 'pages/demo">Free demo class</a>' +
           '<a class="btn btn-wa" href="' + waLink('Hello') + '" target="_blank" rel="noopener">WhatsApp</a></div>');
       document.body.classList.toggle('has-mobile-bar', !!footer.querySelector('.mobile-bar'));
     }
@@ -271,7 +271,7 @@
     var c = data.courses.filter(function (x) { return x.id === id; })[0];
     if (!c) {
       box.innerHTML = '<section class="page-hero"><div class="container"><h1>Course not found</h1>' +
-        '<p class="muted">This course may have been removed.</p><div><a class="btn btn-navy" href="' + ROOT + 'courses/index.html">See all courses</a></div></div></section>';
+        '<p class="muted">This course may have been removed.</p><div><a class="btn btn-navy" href="' + ROOT + 'courses/">See all courses</a></div></div></section>';
       return;
     }
     /* Pages with their own file keep the search title written in the file. */
@@ -299,7 +299,7 @@
 
     box.innerHTML =
       '<section class="page-hero"><div class="container">' +
-      '<div class="crumbs"><a href="' + ROOT + 'index.html">Home</a> / <a href="' + ROOT + 'courses/index.html">Courses</a> / ' + esc(c.group) + '</div>' +
+      '<div class="crumbs"><a href="' + (ROOT || './') + '">Home</a> / <a href="' + ROOT + 'courses/">Courses</a> / ' + esc(c.group) + '</div>' +
       '<div class="course-top"><div class="grow"><div class="eyebrow">' + esc(c.group) + '</div><h1>' + esc(c.name) + '</h1>' +
       '<p class="muted" style="font-size:18px;max-width:600px">' + esc(c.short) + '</p><div class="facts">' + facts + '</div></div>' +
       '<aside class="fee-card"><span class="muted" style="font-size:14px">Course fee</span>' +
@@ -388,7 +388,7 @@
         postForm({ action: 'register', fields: fields, proof: proof }).then(function (res) {
           if (!res || !res.ok) throw new Error('failed');
           track('registration', { course: fields.course });
-          location.href = 'thank-you.html';
+          location.href = ROOT + 'register/thank-you';
         }).catch(function () {
           button.disabled = false; button.textContent = 'Submit registration';
           show('error', 'Your registration could not be sent. Please try again, or send it to us on WhatsApp.');
@@ -426,7 +426,7 @@
         form.innerHTML = '<div class="stack"><div class="eyebrow">Request received</div><h2>Thank you, ' + esc(fields.name) + '</h2>' +
           '<p class="muted">We will message you on WhatsApp to arrange your free demo class.</p>' +
           '<div class="btn-row"><a class="btn btn-navy" target="_blank" rel="noopener" href="' + wa + '">Message us now on WhatsApp</a>' +
-          '<a class="btn btn-line" href="' + ROOT + 'courses/index.html">See all courses</a></div></div>';
+          '<a class="btn btn-line" href="' + ROOT + 'courses/">See all courses</a></div></div>';
       }).catch(function () {
         button.disabled = false; button.textContent = 'Request my free demo class';
         show('error', 'Your request could not be sent. Please use the WhatsApp button instead.');
